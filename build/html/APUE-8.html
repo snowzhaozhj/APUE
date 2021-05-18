@@ -1,0 +1,630 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>进程控制 &mdash; APUE v1 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="进程关系" href="APUE-9.html" />
+    <link rel="prev" title="进程环境" href="APUE-7.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> APUE
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="APUE-1.html">UNIX基础知识</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-2.html">Unix标准及实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-3.html">文件I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-4.html">文件和目录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-5.html">流和FILE对象</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-6.html">系统数据文件和信息</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-7.html">进程环境</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">进程控制</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">进程标识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fork">fork</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vfork">vfork</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exit">exit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#waitwaitpid">wait和waitpid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#waitid">waitid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wait3wait4">wait3和wait4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exec">exec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#idid">更改用户ID和更改组ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">解释器文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#system">system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">进程会计</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">用户标识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">进程调度</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">进程时间</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-9.html">进程关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-10.html">信号</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-11.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-12.html">线程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-13.html">守护进程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-14.html">高级I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-15.html">进程间通信</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-16.html">网络IPC：套接字</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-17.html">高级进程间通信</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">APUE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>进程控制</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/APUE-8.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>进程控制<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id2">
+<h2>进程标识<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>每个进程都有一个非负整型表示的唯一进程ID。</p>
+<p>虽然是唯一的，但是进程ID是可复用的。当一个进程终止后，其进程ID就成为复用的候选者。</p>
+<p>系统中有一些专用进程，具体细节随实现而不同：</p>
+<ul class="simple">
+<li><p>ID为0的进程通常是调度进程，常常被称为<strong>交换进程</strong>（swapper）。该进程是内核的一部分，它并不执行任何磁盘上的程序，因此也被称为系统进程。</p></li>
+<li><p>进程ID为1的进程通常是<strong>init进程</strong>，在自举过程结束时由内核调用。此进程负责在自举内核后启动一个UNIX系统。init进程决不会终止。它是一个普通的用户进程（与交换进程不同，它不是内核中的系统进程），但是它以超级用户特权运行。</p></li>
+<li><p>在某些UNIX的虚拟存储器实现中，进程ID为2的进程是<strong>页守护进程</strong>（page
+daemon），此进程负责支持虚拟存储器系统的分页操作。</p></li>
+</ul>
+<p>可以通过以下函数来获取进程的一些标识符：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">pid_t</span> <span class="nf">getpid</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>     <span class="c1">// 返回调用进程的进程ID</span>
+<span class="kt">pid_t</span> <span class="nf">getppid</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">// 返回调用进程的父进程ID</span>
+<span class="kt">uid_t</span> <span class="nf">getuid</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>     <span class="c1">// 返回调用进程的实际用户ID</span>
+<span class="kt">uid_t</span> <span class="nf">geteuid</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">// 返回调用进程的有效用户ID</span>
+<span class="n">git_t</span> <span class="nf">getgid</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>     <span class="c1">// 返回调用进程的实际组ID</span>
+<span class="kt">gid_t</span> <span class="nf">getegid</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">// 返回调用进程的有效组ID</span>
+
+<span class="c1">// 这些函数都没有出错返回</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fork">
+<h2>fork<a class="headerlink" href="#fork" title="永久链接至标题">¶</a></h2>
+<p>一个现有的进程可以调用fork函数来创建一个新的线程：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">pid_t</span> <span class="nf">fork</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="c1">// 子进程返回0，父进程返回子进程ID，出错返回-1</span>
+</pre></div>
+</div>
+<p>子进程是父进程的副本，获得父进程数据空间、堆和栈的副本。</p>
+<p>父进程和子进程共享正文段。</p>
+<blockquote>
+<div><p>由于在fork之后经常跟随着exec，所以现在的很多实现并不执行一个父进程数据段、栈和堆的完全副本。作为替代，使用了写时复制（Copy-On-Write，COW）技术。这些区域由父进程和子进程共享，而且内核将它们的访问权限改变为只读。如果父进程和子进程中的任一个试图修改这些区域，则内核只为修改区域的那块内存制作一个副本，通常是虚拟存储系统中的一“页”。</p>
+</div></blockquote>
+<p>fork函数的简单演示：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;apue.h&quot;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="n">globvar</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
+<span class="kt">char</span> <span class="n">buf</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;a write to stdout</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">var</span><span class="p">;</span>
+    <span class="kt">pid_t</span> <span class="n">pid</span><span class="p">;</span>
+    <span class="n">var</span> <span class="o">=</span> <span class="mi">88</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">&quot;write error!&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;before fork</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="c1">// don&#39;t flush stdout</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">&quot;fork error!&quot;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// child process</span>
+        <span class="n">globvar</span><span class="o">++</span><span class="p">;</span>
+        <span class="n">var</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// parent process</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;pid = %ld, glob = %d, var = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">globvar</span><span class="p">,</span> <span class="n">var</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>直接输出结果：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="n">write</span> <span class="n">to</span> <span class="n">stdout</span>
+<span class="n">before</span> <span class="n">fork</span>
+<span class="n">pid</span> <span class="o">=</span> <span class="mi">25767</span><span class="p">,</span> <span class="n">glob</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span> <span class="n">var</span> <span class="o">=</span> <span class="mi">89</span>
+<span class="n">pid</span> <span class="o">=</span> <span class="mi">25766</span><span class="p">,</span> <span class="n">glob</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">var</span> <span class="o">=</span> <span class="mi">88</span>
+</pre></div>
+</div>
+<p>重定向到某个文件后的输出结果：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="n">write</span> <span class="n">to</span> <span class="n">stdout</span>
+<span class="n">before</span> <span class="n">fork</span>
+<span class="n">pid</span> <span class="o">=</span> <span class="mi">25790</span><span class="p">,</span> <span class="n">glob</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span> <span class="n">var</span> <span class="o">=</span> <span class="mi">89</span>
+<span class="n">before</span> <span class="n">fork</span>
+<span class="n">pid</span> <span class="o">=</span> <span class="mi">25789</span><span class="p">,</span> <span class="n">glob</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">var</span> <span class="o">=</span> <span class="mi">88</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>重定向会使得标准输出从“行缓冲”变为“全缓冲”，进而导致上述结果的不同。</p>
+</div></blockquote>
+<p>fork的一个特性是父进程的所有打开文件描述符都被复制到子进程中。父进程和子进程每个相同的打开描述符共享一个文件表项，就好像执行了dup函数一样。</p>
+<p>因此在重定向父进程的标准输出时，子进程的标准输出也被重定向。</p>
+<p>除了打开文件之外，父进程的很多其他属性也由子进程继承，包括：</p>
+<ul class="simple">
+<li><p>实际用户ID、实际组ID、有效用户ID、有效组ID、附属组ID、进程组ID、会话ID；</p></li>
+<li><p>控制终端；</p></li>
+<li><p>设置用户ID标志和设置组ID标志；</p></li>
+<li><p>当前工作目录、根目录；</p></li>
+<li><p>文件模式创建屏蔽字；</p></li>
+<li><p>信号屏蔽和安排；</p></li>
+<li><p>对任一打开文件描述符的执行时关闭（close-on-exec）标志；</p></li>
+<li><p>环境、连接的共享存储段、存储映像、资源限制。</p></li>
+</ul>
+<p>父进程和子进程之间的区别：</p>
+<ul class="simple">
+<li><p>fork的返回值不同；</p></li>
+<li><p>进程ID不同，父进程ID不同；</p></li>
+<li><p>子进程的tms_utime、tms_stime、tms_cutime和tms_ustime的值设置为0；</p></li>
+<li><p>子进程不继承父进程设置的文件锁；</p></li>
+<li><p>子进程的未处理闹钟被清除；</p></li>
+<li><p>子进程的未处理信号集设置为空集。</p></li>
+</ul>
+</div>
+<div class="section" id="vfork">
+<h2>vfork<a class="headerlink" href="#vfork" title="永久链接至标题">¶</a></h2>
+<p>vfork函数用于创建一个新进程，而该新进程的目的是exec一个新程序。</p>
+<p>vfork与fork一样都创建一个子进程，但是它并不将父进程的地址空间完全复制到子进程中。</p>
+<p>在子进程调用exec或exit之前，它<strong>在父进程的空间中运行</strong>。</p>
+<p>vfork保证子进程先运行，在它调用exec或exit之后父进程才可能被调度运行，当子进程调用这两个函数中的任意一个时，父进程会恢复运行。</p>
+</div>
+<div class="section" id="exit">
+<h2>exit<a class="headerlink" href="#exit" title="永久链接至标题">¶</a></h2>
+<p>进程有5种正常终止及3种异常终止方式。</p>
+<p>5种正常终止方式：</p>
+<ol class="arabic simple">
+<li><p>在main函数内执行return语句，这等效于调用exit。</p></li>
+<li><p>调用exit函数。其操作包括调用各终止处理程序（终止处理程序在调用atexit函数时登记），然后关闭所有标准I/O流等。</p></li>
+<li><p>调用<code class="docutils literal notranslate"><span class="pre">_exit</span></code>或<code class="docutils literal notranslate"><span class="pre">_Exit</span></code>函数。</p></li>
+<li><p>进程的最后一个线程在其启动例程中执行return语句。但是，该线程的返回值不用作进程的返回值。当最后一个线程从其启动例程返回时，该进程以终止状态0返回。</p></li>
+<li><p>进程的最后一个线程调用pthread_exit函数。进程终止状态总是0，与传送给pthread_exit的参数无关。</p></li>
+</ol>
+<p>3种异常终止方式：</p>
+<ol class="arabic simple" start="6">
+<li><p>调用abort。它产生SIGABRT信号。</p></li>
+<li><p>当进程接收到某些信号时。信号可由进程自身（如调用abort函数）、其他进程或内核产生。</p></li>
+<li><p>最后一个线程对“取消”（cancellation）请求作出响应。</p></li>
+</ol>
+<p>对于父进程已经终止的所有进程，它们的父进程都改变为init进程。这个过程被称为<strong>init进程收养</strong>。</p>
+<p>一个已经终止、但是其父进程尚未对其进行善后处理（获取终止子进程的有关信息、释放它仍占用的资源）的进程被称为<strong>僵死进程</strong>（zombie）。ps(1)命令将僵死进程的状态打印为Z。</p>
+</div>
+<div class="section" id="waitwaitpid">
+<h2>wait和waitpid<a class="headerlink" href="#waitwaitpid" title="永久链接至标题">¶</a></h2>
+<p>当一个进程正常或异常终止时，内核就向其父进程发送 SIGCHLD
+信号。因为子进程终止是个异步事件（这可以在父进程运行的任何时候发生），所以这种信号也是内核向父进程发的异步通知。</p>
+<p>调用wait和waitpid的可能影响：</p>
+<ul class="simple">
+<li><p>如果其所有子进程都还在运行，则阻塞。</p></li>
+<li><p>如果一个子进程已终止，正等待父进程获取其终止状态，则取得该子进程的终止状态立即返回。</p></li>
+<li><p>如果它没有任何子进程，则立即出错返回。</p></li>
+</ul>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/wait.h&gt;</span><span class="cp"></span>
+
+<span class="kt">pid_t</span> <span class="nf">wait</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">statloc</span><span class="p">);</span>
+<span class="kt">pid_t</span> <span class="nf">waitpid</span><span class="p">(</span><span class="kt">pid_t</span> <span class="n">pid</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">statloc</span><span class="p">,</span> <span class="kt">int</span> <span class="n">options</span><span class="p">);</span>
+<span class="c1">// 成功返回进程ID，出错返回0或-1</span>
+</pre></div>
+</div>
+<p>statloc是一个整型指针。如果statloc不是一个空指针，则终止进程的终止状态就存放在它所指向的单元内。如果不关心终止状态，则可将该参数指定为空指针。</p>
+<p>可以通过以下的宏对statloc进行测试（其中的status=*statloc）：</p>
+<p><img alt="image0" src="https://gitee.com/snow_zhao/img/raw/master/img/Image00152.jpg" /></p>
+<p>waitpid函数中pid参数的作用：</p>
+<ul class="simple">
+<li><p>pid == −1：等待任一子进程。此种情况下，waitpid与wait等效。</p></li>
+<li><p>pid &gt; 0：等待进程ID与pid相等的子进程。</p></li>
+<li><p>pid == 0：等待组ID等于调用进程组ID的任一子进程。</p></li>
+<li><p>pid &lt; −1：等待组ID等于pid绝对值的任一子进程。</p></li>
+</ul>
+<p>waitpid的options参数：</p>
+<p><img alt="image1" src="https://gitee.com/snow_zhao/img/raw/master/img/Image00156.jpg" /></p>
+<p>对于wait，其唯一的出错是调用进程没有子进程。但是对于waitpid，如果指定的进程或进程组不存在，或者参数pid指定的进程不是调用进程的子进程，都可能出错。</p>
+<p>一个有趣的例子，通过fork两次，让父进程无需等待子进程终止，子进程无需处于僵死状态直到父进程终止。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;apue.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/wait.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">pid_t</span> <span class="n">pid</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">&quot;fork error&quot;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">err_sys</span><span class="p">(</span><span class="s">&quot;fork error&quot;</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="c1">// when cur process&#39;s parent called exit(0),</span>
+        <span class="c1">// cur process will be adopted by the init process</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;second child, parent pid = %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">getppid</span><span class="p">());</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">waitpid</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">pid</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">&quot;waitpid error&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="waitid">
+<h2>waitid<a class="headerlink" href="#waitid" title="永久链接至标题">¶</a></h2>
+<p>Single UNIX
+Specification包括了另一个取得进程终止状态的函数waitid，此函数类似于waitpid，但提供了更多的灵活性。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/wait.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">waitid</span><span class="p">(</span><span class="n">idtype_t</span> <span class="n">idtype</span><span class="p">,</span> <span class="kt">id_t</span> <span class="n">id</span><span class="p">,</span> <span class="kt">siginfo_t</span> <span class="o">*</span><span class="n">infop</span><span class="p">,</span> <span class="kt">int</span> <span class="n">options</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>该函数支持的idtype和options如下：</p>
+<p><img alt="image2" src="https://gitee.com/snow_zhao/img/raw/master/img/Image00159.jpg" /></p>
+<p>infop参数是指向siginfo结构的指针。该结构包含了造成子进程状态改变有关信号的详细信息。</p>
+</div>
+<div class="section" id="wait3wait4">
+<h2>wait3和wait4<a class="headerlink" href="#wait3wait4" title="永久链接至标题">¶</a></h2>
+<p>wait3和wait4是从BSD分支沿袭下来的，他们提供的功能比POSIX.1函数wait,
+waitpid, waitid要多一个。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/wait.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/time.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/resource.h&gt;</span><span class="cp"></span>
+
+<span class="kt">pid_t</span> <span class="nf">wait3</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">statloc</span><span class="p">,</span> <span class="kt">int</span> <span class="n">options</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">rusage</span><span class="o">*</span> <span class="n">rusage</span><span class="p">);</span>
+<span class="kt">pid_t</span> <span class="nf">wait4</span><span class="p">(</span><span class="kt">pid_t</span> <span class="n">pid</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">statloc</span><span class="p">,</span> <span class="kt">int</span> <span class="n">options</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">rusage</span><span class="o">*</span> <span class="n">rusage</span><span class="p">);</span>
+<span class="c1">// 成功返回进程ID，出错返回-1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exec">
+<h2>exec<a class="headerlink" href="#exec" title="永久链接至标题">¶</a></h2>
+<p>当进程调用exec函数时，该进程执行的程序完全替换为新程序，而新程序则从其main函数开始执行。</p>
+<p>调用exec并不创建新进程，exec只是用磁盘上的一个新程序替换了当前进程的正文段、数据段、堆段和栈段。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span>#include &lt;unistd.h&gt;
+
+int execl(const char* pathname, const char* arg0, ... /* (char*)0 */);
+int execv(const char* pathname, char* const argv[]);
+int execle(const char* pathname, const char* arg0, ... /* (char*)0 char* const envp[] */);
+int execve(const char* pathname, char* const argv[], char* const envp[]);
+int execlp(const char* pathname, const char* arg0, ... /* (char*)0 */);
+int execvp(const char* pathname, char* const argv[]);
+int fexecve(int fd, char* const argv[], char* const envp[]);
+// 成功不返回，出错返回-1
+</pre></div>
+</div>
+<p>带有p的函数：</p>
+<ul class="simple">
+<li><p>如果filename中包含/，则就将其视为路径名；</p></li>
+<li><p>否则就按PATH环境变量，在它所指定的各目录中搜寻可执行文件。</p></li>
+</ul>
+<blockquote>
+<div><p>如果execlp或execvp使用路径前缀中的一个找到了一个可执行文件，但是该文件不是由连接编辑器产生的机器可执行文件，则就认为该文件是一个shell脚本，于是试着调用/bin/sh，并以该filename作为shell的输入。</p>
+</div></blockquote>
+<p>l代表list，v代表vector。</p>
+<p>以e结尾的函数可以传递一个指向环境字符串指针数组的指针。其他4个函数则使用调用进程中的environ变量为新程序复制现有的环境。</p>
+<p>在exec前后实际用户ID和实际组ID保持不变，而有效ID是否改变则取决于所执行程序文件的设置用户ID位和设置组ID位是否设置。如果新程序的设置用户ID位已设置，则有效用户ID变成程序文件所有者的ID；否则有效用户ID不变。对组ID的处理方式与此相同。</p>
+</div>
+<div class="section" id="idid">
+<h2>更改用户ID和更改组ID<a class="headerlink" href="#idid" title="永久链接至标题">¶</a></h2>
+<p>可以通过setuid和setgid来设置用户ID和组ID：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">setuid</span><span class="p">(</span><span class="kt">uid_t</span> <span class="n">uid</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">setgid</span><span class="p">(</span><span class="kt">gid_t</span> <span class="n">gid</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>其中的更改规则可参考下图（还包括exec函数的情况）：</p>
+<p><img alt="image3" src="https://gitee.com/snow_zhao/img/raw/master/img/Image00168.jpg" /></p>
+<p>可以通过setreuid和setregid来交换实际用户ID和有效用户ID的值：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">setreuid</span><span class="p">(</span><span class="kt">uid_t</span> <span class="n">ruid</span><span class="p">,</span> <span class="kt">uid_t</span> <span class="n">euid</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">setregid</span><span class="p">(</span><span class="kt">gid_t</span> <span class="n">rgid</span><span class="p">,</span> <span class="kt">gid_t</span> <span class="n">egid</span><span class="p">);</span>
+<span class="c1">// 成功返回0，失败返回-1</span>
+</pre></div>
+</div>
+<p>可以通过seteuid和setegid来设置有效ID：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">seteuid</span><span class="p">(</span><span class="kt">uid_t</span> <span class="n">uid</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">setegid</span><span class="p">(</span><span class="kt">gid_t</span> <span class="n">gid</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>解释器文件<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>解释器文件（interpreter file）是文本文件，其起始行的形式是：</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="ch">#! pathname [ optional-argument ]</span>
+</pre></div>
+</div>
+<p>个人理解：如果指定了起始行的话，就会在原来的argv数组前插入起始行的参数。</p>
+</div>
+<div class="section" id="system">
+<h2>system<a class="headerlink" href="#system" title="永久链接至标题">¶</a></h2>
+<p>可以使用system函数在程序中执行一个命令行命令：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">system</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">cmdstring</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>如果cmdstring是一个空指针，则仅当命令处理程序可用时，system返回非0值。</p>
+<p>system在其实现中调用了fork、exec和waitpid，因此有3种返回值。</p>
+<ol class="arabic simple">
+<li><p>fork失败或者waitpid返回除EINTR之外的出错，则system返回−1，并且设置errno。</p></li>
+<li><p>exec失败（表示不能执行shell），则其返回值如同shell执行了exit(127)一样。</p></li>
+<li><p>如果所有3个函数（fork、exec和waitpid）都成功，那么system的返回值是shell的终止状态。</p></li>
+</ol>
+<p>设置用户ID或设置组ID程序决不应调用system函数。</p>
+</div>
+<div class="section" id="id4">
+<h2>进程会计<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>超级用户执行一个带路径名参数的accton命令启用会计处理。会计记录写到指定的文件中，在FreeBSD和Mac
+OS
+X中，该文件通常是/var/account/acct；在Linux中，该文件是/var/account/pacct；在Solaris中，该文件是/var/adm/pacct。执行不带任何参数的accton命令则停止会计处理。</p>
+<p>典型的会计记录包含总量较小的二进制数据，一般包括命令名、所使用的CPU时间总量、用户ID和组ID、启动时间等。</p>
+<p>会计记录所需的各个数据（各CPU时间、传输的字符数等）都由内核保存在进程表中，并在一个新进程被创建时初始化（如fork之后在子进程中）。进程终止时写一个会计记录。</p>
+<p>会计记录的注意事项：</p>
+<ol class="arabic simple">
+<li><p>我们不能获取永远不终止的进程的会计记录。像init这样的进程在系统生命周期中一直在运行，并不产生会计记录。这也同样适合于内核守护进程，它们通常不会终止。</p></li>
+<li><p>在会计文件中记录的顺序对应于进程终止的顺序，而不是它们启动的顺序。</p></li>
+<li><p>会计记录对应于进程而不是程序。</p></li>
+</ol>
+</div>
+<div class="section" id="id5">
+<h2>用户标识<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<p>可以使用getlogin函数来获取用户登录名：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">char</span><span class="o">*</span> <span class="nf">getlogin</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="c1">// 成功返回指向登录名字符串的指针，出错返回NULL</span>
+</pre></div>
+</div>
+<p>如果调用此函数的进程没有连接到用户登录时所用的终端，则函数会失败。通常称这些进程为守护进程（daemon）。</p>
+<p>给出了登录名，就可用getpwnam在口令文件中查找用户的相应记录，从而确定其登录shell等。</p>
+</div>
+<div class="section" id="id6">
+<h2>进程调度<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<p>NZERO是系统默认的友好值。</p>
+<p>进程可以通过nice函数获取或更改它的nice值。使用这个函数，进程只能影响自己的nice值，不能影响任何其他进程的nice值。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">nice</span><span class="p">(</span><span class="kt">int</span> <span class="n">incr</span><span class="p">);</span>
+<span class="c1">// 成功返回新的友好值，出错返回-1</span>
+</pre></div>
+</div>
+<p>ncr参数被增加到调用进程的nice值上。如果incr太大，系统直接把它降到最大合法值。如果incr太小，系统会无声息地把它提高到最小合法值。</p>
+<p>可以使用getpriority函数来获取友好值：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/resource.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">getpriority</span><span class="p">(</span><span class="kt">int</span> <span class="n">which</span><span class="p">,</span> <span class="kt">id_t</span> <span class="n">who</span><span class="p">);</span>
+<span class="c1">// 成功返回-NZERO~NZEROR-1之间的友好值，出错返回-1</span>
+</pre></div>
+</div>
+<p>which参数控制who参数是如何解释的：</p>
+<ul class="simple">
+<li><p>PRIO_PROCESS：进程；</p></li>
+<li><p>PRIO_PGRP：进程组；</p></li>
+<li><p>PRIO_USER：用户ID。</p></li>
+</ul>
+<p>如果who参数为0，表示调用进程、进程组或者用户。</p>
+<p>当which设为PRIO_USER并且who为0时，使用调用进程的实际用户ID。</p>
+<p>如果which参数作用于多个进程，则返回所有作用进程中优先级最高的（最小的nice值）。</p>
+<p>可以使用setpriority函数来为进程、进程组和属于特定用户ID的所有进程设置优先级：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/resource.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">setpriority</span><span class="p">(</span><span class="kt">int</span> <span class="n">which</span><span class="p">,</span> <span class="kt">id_t</span> <span class="n">who</span><span class="p">,</span> <span class="kt">int</span> <span class="n">value</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>进程时间<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<p>任意进程都可以通过times函数来获取进程时间：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/times.h&gt;</span><span class="cp"></span>
+
+<span class="kt">clock_t</span> <span class="nf">times</span><span class="p">(</span><span class="k">struct</span> <span class="nc">tms</span><span class="o">*</span> <span class="n">buf</span><span class="p">);</span>
+<span class="c1">// 成功返回流逝的墙上时钟时间，出错返回-1</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">tms</span></code>的结构为：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">tms</span> <span class="p">{</span>
+    <span class="kt">clock_t</span> <span class="n">tms_utime</span><span class="p">;</span>  <span class="c1">// user CPU time</span>
+    <span class="kt">clock_t</span> <span class="n">tms_stime</span><span class="p">;</span>  <span class="c1">// system CPU time</span>
+    <span class="kt">clock_t</span> <span class="n">tms_cutime</span><span class="p">;</span> <span class="c1">// user CPU time, terminated children</span>
+    <span class="kt">clock_t</span> <span class="n">tms_cstime</span><span class="p">;</span> <span class="c1">// system CPU time, terminated children</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>该结构中两个针对子进程的字段包含了此进程用wait函数族已等待到的各子进程的值。</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="APUE-9.html" class="btn btn-neutral float-right" title="进程关系" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="APUE-7.html" class="btn btn-neutral float-left" title="进程环境" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2021, snowzhao
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

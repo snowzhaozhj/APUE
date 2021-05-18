@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Unix标准及实现 &mdash; APUE v1 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="文件I/O" href="APUE-3.html" />
+    <link rel="prev" title="UNIX基础知识" href="APUE-1.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> APUE
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="APUE-1.html">UNIX基础知识</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Unix标准及实现</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">一些名称缩写</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">限制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">选项</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-3.html">文件I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-4.html">文件和目录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-5.html">流和FILE对象</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-6.html">系统数据文件和信息</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-7.html">进程环境</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-8.html">进程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-9.html">进程关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-10.html">信号</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-11.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-12.html">线程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-13.html">守护进程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-14.html">高级I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-15.html">进程间通信</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-16.html">网络IPC：套接字</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-17.html">高级进程间通信</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">APUE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Unix标准及实现</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/APUE-2.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="unix">
+<h1>Unix标准及实现<a class="headerlink" href="#unix" title="永久链接至标题">¶</a></h1>
+<blockquote>
+<div><p>这一章前面一部分介绍了Unix操作系统的标准和实现，后面部分主要是对一些<strong>宏</strong>的讨论。</p>
+<p>个人认为这一章对我这样的初级程序员来说没有那么重要，因此仅记录一点个人觉得值得一记的东西。</p>
+</div></blockquote>
+<div class="section" id="id1">
+<h2>一些名称缩写<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ANSI</span></code>: American National Standards Institute, 美国国家标准学会。</p>
+<p><code class="docutils literal notranslate"><span class="pre">ISO</span></code>: International Organization for Standardization,
+国际标准化组织。</p>
+<p><code class="docutils literal notranslate"><span class="pre">IEC</span></code>: International Electrotechnical Commission, 国际电子技术协会。</p>
+<p><code class="docutils literal notranslate"><span class="pre">IEEE</span></code>: Institute of Electrical and Electronic Engineers,
+电气和电子工程师学会。</p>
+<p><code class="docutils literal notranslate"><span class="pre">POSIX</span></code>: Portable Operating System Interface, 可移植操作系统接口。</p>
+<p><code class="docutils literal notranslate"><span class="pre">SUS</span></code>: Single UNIX Specification, 单一UNIX规范。</p>
+<p><code class="docutils literal notranslate"><span class="pre">XSI</span></code>: X/Open System Interface, X/Open系统接口。</p>
+</div>
+<div class="section" id="id2">
+<h2>限制<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>限制可分为两种：编译时限制和运行时限制。</p>
+<p>编译时限制可在头文件中定义，而运行时限制需要进程调用一个函数来获取限制值。</p>
+<p>UNIX提供了以下三种限制：</p>
+<ol class="arabic simple">
+<li><p>编译时限制（头文件）。</p></li>
+<li><p>与文件或目录无关的运行时限制（<code class="docutils literal notranslate"><span class="pre">sysconf</span></code>函数）。</p></li>
+<li><p>与文件或目录有关的运行时限制（<code class="docutils literal notranslate"><span class="pre">pathconf</span></code>和<code class="docutils literal notranslate"><span class="pre">fpathconf</span></code>函数）。</p></li>
+</ol>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+<span class="kt">long</span> <span class="nf">sysconf</span><span class="p">(</span><span class="kt">int</span> <span class="n">name</span><span class="p">);</span>
+<span class="kt">long</span> <span class="nf">pathconf</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">pathname</span><span class="p">,</span> <span class="kt">int</span> <span class="n">name</span><span class="p">);</span>  <span class="c1">// 使用路径名作为参数</span>
+<span class="kt">long</span> <span class="nf">fpathconf</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">name</span><span class="p">);</span>               <span class="c1">// 使用文件描述符作为参数</span>
+<span class="c1">// 以上三个函数成功返回对应值，出错返回-1</span>
+<span class="c1">// 如果name参数并不是一个合适的常量，那么三个函数都返回-1，并把errno设置为EINVAL</span>
+<span class="c1">// 有些name会返回一个变量值(返回值&gt;=0)或者提示该值是不确定的，不确定的值通过返回-1来体现，而不改变errno的值</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>选项<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>对于每一个选项，有以下3种可能的平台支持状态。</p>
+<ol class="arabic">
+<li><p>如果符号常量没有定义或者定义值为−1，那么该平台在编译时并不支持相应选项。</p></li>
+<li><p>如果符号常量的定义值大于0，那么该平台支持相应选项。</p></li>
+<li><p>如果符号常量的定义值为0，则必须调用sysconf、pathconf或fpathconf来判断相应选项是否受到支持。在这种情况下，这些函数的name参数前缀<code class="docutils literal notranslate"><span class="pre">_POSIX</span></code>必须替换为<code class="docutils literal notranslate"><span class="pre">_SC</span></code>或<code class="docutils literal notranslate"><span class="pre">_PC</span></code></p>
+<blockquote>
+<div><p>对于以<code class="docutils literal notranslate"><span class="pre">_XOPEN</span></code>为前缀的常量，在构成name参数时必须在其前放置<code class="docutils literal notranslate"><span class="pre">_SC</span></code>或<code class="docutils literal notranslate"><span class="pre">_PC</span></code>。例如，若常量<code class="docutils literal notranslate"><span class="pre">_POSIX_RAW_THREADS</span></code>是未定义的，那么就可以将name参数设置为SC_RAW_THREADS，并以此调用sysconf来判断该平台是否支持POSIX线程选项。如若常量<code class="docutils literal notranslate"><span class="pre">_XOPEN_UNIX</span></code>是未定义的，那么就可以将name参数设置为<code class="docutils literal notranslate"><span class="pre">_SC_XOPEN_UNIX</span></code>，并以此调用sysconf来判断该平台是否支持XSI扩展。</p>
+</div></blockquote>
+</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="APUE-3.html" class="btn btn-neutral float-right" title="文件I/O" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="APUE-1.html" class="btn btn-neutral float-left" title="UNIX基础知识" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2021, snowzhao
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

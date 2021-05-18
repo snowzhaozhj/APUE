@@ -1,0 +1,452 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to APUE&#39;s documentation! &mdash; APUE v1 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="UNIX基础知识" href="APUE-1.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home" alt="Documentation Home"> APUE
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="APUE-1.html">UNIX基础知识</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-2.html">Unix标准及实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-3.html">文件I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-4.html">文件和目录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-5.html">流和FILE对象</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-6.html">系统数据文件和信息</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-7.html">进程环境</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-8.html">进程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-9.html">进程关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-10.html">信号</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-11.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-12.html">线程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-13.html">守护进程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-14.html">高级I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-15.html">进程间通信</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-16.html">网络IPC：套接字</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-17.html">高级进程间通信</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">APUE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Welcome to APUE's documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-apue-s-documentation">
+<h1>Welcome to APUE's documentation!<a class="headerlink" href="#welcome-to-apue-s-documentation" title="永久链接至标题">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="APUE-1.html">UNIX基础知识</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-1.html#id1">UNIX体系结构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-1.html#id2">登录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-1.html#id3">文件与目录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-1.html#id4">输入和输出</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-1.html#id5">程序和进程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-1.html#id6">出错处理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-1.html#id7">用户标识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-1.html#id8">信号</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-1.html#id9">时间值</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-1.html#id10">系统调用和库函数</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-2.html">Unix标准及实现</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-2.html#id1">一些名称缩写</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-2.html#id2">限制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-2.html#id3">选项</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-3.html">文件I/O</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#openopenat">open和openat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#creat">creat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#close">close</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#lseek">lseek</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#read">read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#write">write</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#id1">文件共享</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#id2">原子操作</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#dupdup2">dup与dup2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#syncfsyncfdatasync">sync、fsync和fdatasync</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#fcntl">fcntl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#ioctl">ioctl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-3.html#dev-fd">/dev/fd</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-4.html">文件和目录</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#statfstatfstatatlstat">stat、fstat、fstatat、lstat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id2">文件类型</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#idid">设置用户ID和设置组ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id3">文件访问权限</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id4">新文件和目录的所有权</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#accessfaccessat">access和faccessat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#umask">umask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#chmod-fchmod-fchmodat">chmod, fchmod, fchmodat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id5">粘着位</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#chownfchownfchownatlchown">chown、fchown、fchownat、lchown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id6">文件长度</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id7">文件截断</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id8">文件系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#linklinkatunlinkunlinkatremove">link、linkat、unlink、unlinkat、remove</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#renamerenameat">rename和renameat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id9">符号链接</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id10">创建和读取符号链接</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id11">文件时间</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#futimens-utimensat-utimes">futimens, utimensat, utimes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#mkdir-mkdirat-rmdir">mkdir, mkdirat, rmdir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id12">读目录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#chdir-fchdir-getcwd">chdir, fchdir, getcwd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-4.html#id13">设备特殊文件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-5.html">流和FILE对象</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#id1">标准输入、标准输出、标准错误</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#id2">缓冲</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#id3">打开流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#id4">读和写流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#i-o">每次一行I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#id5">二进制I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#id6">定位流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#id7">格式化I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#id8">实现细节</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#id9">临时文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-5.html#id10">内存流</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-6.html">系统数据文件和信息</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-6.html#id2">口令文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-6.html#id3">阴影口令</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-6.html#id4">组文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-6.html#id">附属组ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-6.html#id5">其他数据文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-6.html#id6">登录账户记录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-6.html#id7">系统标识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-6.html#id8">时间和日期例程</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-7.html">进程环境</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-7.html#id2">进程终止</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-7.html#id3">命令行参数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-7.html#id4">环境表</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-7.html#c">C程序的存储布局</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-7.html#id5">共享库</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-7.html#id6">存储空间分配</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-7.html#id7">环境变量</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-7.html#setjmplongjmp">setjmp和longjmp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-7.html#getrlimitsetrlimit">getrlimit和setrlimit</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-8.html">进程控制</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#id2">进程标识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#fork">fork</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#vfork">vfork</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#exit">exit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#waitwaitpid">wait和waitpid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#waitid">waitid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#wait3wait4">wait3和wait4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#exec">exec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#idid">更改用户ID和更改组ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#id3">解释器文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#system">system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#id4">进程会计</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#id5">用户标识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#id6">进程调度</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-8.html#id7">进程时间</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-9.html">进程关系</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#id2">终端登录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#id3">现代UNIX系统的多身份验证</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#id4">网络登录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#id5">进程组</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#id6">会话</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#id7">控制终端</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#tcgetpgrp-tcsetpgrp-tcgetsid">tcgetpgrp, tcsetpgrp, tcgetsid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#id8">作业控制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#shell">shell执行程序</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#id9">孤儿进程组</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-9.html#freebsd">FreeBSD实现</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-10.html">信号</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#id2">信号概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#signal">signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#id3">中断的系统调用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#id4">可重入函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#sigcld">SIGCLD语义</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#id5">可靠信号术语和语义</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#killraise">kill和raise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#alarmpause">alarm和pause</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#id6">信号集</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#sigprocmask">sigprocmask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#sigpending">sigpending</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#sigaction">sigaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#sigsetjmpsiglongjmp">sigsetjmp和siglongjmp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#sigsuspend">sigsuspend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#abort">abort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#system">system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#sleep-nanosleep-clock-nanosleep">sleep, nanosleep, clock_nanosleep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#sigqueue">sigqueue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#id7">作业控制信号</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-10.html#id8">信号名与编号</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-11.html">线程</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-11.html#id2">线程概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-11.html#id3">线程标识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-11.html#id4">线程创建</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-11.html#id5">线程终止</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-11.html#id6">线程同步</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-11.html#id9">条件变量</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-12.html">线程控制</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-12.html#id2">线程属性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-12.html#id3">同步属性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-12.html#id8">重入</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-12.html#id9">线程特定数据</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-12.html#id10">取消选项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-12.html#id11">线程和信号</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-12.html#fork">线程与fork</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-13.html">守护进程</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-13.html#id2">守护进程的特征</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-13.html#id3">编程规则</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-13.html#id4">出错记录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-13.html#id5">单实例守护进程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-13.html#id6">守护进程的惯例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-13.html#id9">客户进程-服务器进程模型</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-14.html">高级I/O</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-14.html#id1">非阻塞I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-14.html#id2">记录锁</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-14.html#id5">I/O多路转接</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-14.html#poll">poll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-14.html#id6">异步I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-14.html#readvwritev">readv和writev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-14.html#readnwriten">readn和writen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-14.html#id7">存储映射I/O</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-15.html">进程间通信</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-15.html#id2">管道</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-15.html#popenpclose">popen和pclose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-15.html#id3">协同进程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-15.html#fifo">FIFO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-15.html#xsi-ipc">XSI IPC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-15.html#id5">权限结构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-15.html#id6">消息队列</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-15.html#id7">信号量</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-15.html#id8">共享存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-15.html#posix">POSIX信号量</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-16.html">网络IPC：套接字</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-16.html#id1">套接字描述符</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-16.html#id2">寻址</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-16.html#id7">建立连接</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-16.html#id8">数据传输</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-16.html#id9">套接字选项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-16.html#id10">带外数据</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-16.html#i-o">非阻塞和异步I/O</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-17.html">高级进程间通信</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="APUE-17.html#unix">UNIX域套接字</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-17.html#id2">命名UNIX域套接字</a></li>
+<li class="toctree-l2"><a class="reference internal" href="APUE-17.html#getopt">getopt</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="APUE-1.html" class="btn btn-neutral float-right" title="UNIX基础知识" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2021, snowzhao
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

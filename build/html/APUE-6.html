@@ -1,0 +1,538 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>系统数据文件和信息 &mdash; APUE v1 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="进程环境" href="APUE-7.html" />
+    <link rel="prev" title="流和FILE对象" href="APUE-5.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> APUE
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="APUE-1.html">UNIX基础知识</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-2.html">Unix标准及实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-3.html">文件I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-4.html">文件和目录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-5.html">流和FILE对象</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">系统数据文件和信息</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">口令文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">阴影口令</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">组文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id">附属组ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">其他数据文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">登录账户记录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">系统标识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">时间和日期例程</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-7.html">进程环境</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-8.html">进程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-9.html">进程关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-10.html">信号</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-11.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-12.html">线程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-13.html">守护进程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-14.html">高级I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-15.html">进程间通信</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-16.html">网络IPC：套接字</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-17.html">高级进程间通信</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">APUE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>系统数据文件和信息</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/APUE-6.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>系统数据文件和信息<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id2">
+<h2>口令文件<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>口令文件是<code class="docutils literal notranslate"><span class="pre">/etc/passwd</span></code>，是一个ASCII文件。</p>
+<p>为了阻止一个特定用户登录系统：</p>
+<ul class="simple">
+<li><p>可以将登录shell设置为/dev/null外</p></li>
+<li><p>还可以将登录shell设置为/dev/false。它简单地以不成功（非0）状态终止，该shell将此种终止状态判断为假。</p></li>
+<li><p>还可以将登录shell设置为/bin/true。它所做的一切是以成功（0）状态终止。</p></li>
+<li><p>某些系统提供nologin命令，它打印可定制的出错信息，然后以非0状态终止。</p></li>
+</ul>
+<p>使用nobody用户名的一个目的是，使任何人都可登录至系统，</p>
+<p>某些系统提供了<code class="docutils literal notranslate"><span class="pre">vipw</span></code>来编辑口令文件(需要管理员权限)。</p>
+<p>可以通过以下两个函数来获取口令文件项：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pwd.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">passwd</span><span class="o">*</span> <span class="n">getpwuid</span><span class="p">(</span><span class="kt">uid_t</span> <span class="n">uid</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">passwd</span><span class="o">*</span> <span class="n">getpwnam</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">);</span>
+<span class="c1">// 成功返回指针，出错返回NULL</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">passwd</span></code>的结构如下图所示：</p>
+<div class="figure align-default" id="id9">
+<img alt="image-20210428123359734" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210428123359734.png" />
+<p class="caption"><span class="caption-text">image-20210428123359734</span><a class="headerlink" href="#id9" title="永久链接至图片">¶</a></p>
+</div>
+<p>可以使用以下函数来查看整个口令文件：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pwd.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">passwd</span><span class="o">*</span> <span class="n">getpwent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="c1">// 成功返回指针，出错或者到达文件尾端，则返回NULL</span>
+<span class="kt">void</span> <span class="nf">setpwent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">endpwent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>getpwent函数返回口令文件中的下一个记录项。</p></li>
+<li><p>setpwent将getpwent的读写地址指向密码文件开头。</p></li>
+<li><p>endpwent关闭这些文件。</p></li>
+</ul>
+<p>getpwnam函数的一种实现：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">passwd</span><span class="o">*</span> <span class="n">getpwnam</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="nc">passwd</span> <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+    <span class="n">setpwent</span><span class="p">();</span>
+    <span class="k">while</span> <span class="p">((</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">getpwent</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ptr</span><span class="o">-&gt;</span><span class="n">pw_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">endpwent</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">ptr</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>阴影口令<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>加密口令是经单向加密算法处理过的用户口令副本。此算法是单向的，不能从加密口令猜测到原来的口令。</p>
+<p>可以使用以下函数访问阴影口令文件：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;shadow.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">spwd</span><span class="o">*</span> <span class="n">getspwnam</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">spwd</span><span class="o">*</span> <span class="n">getspent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="c1">// 成功返回指针，出错返回NULL</span>
+<span class="kt">void</span> <span class="nf">setspent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">endspent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spwd</span></code>的结构如下图所示：</p>
+<div class="figure align-default" id="id10">
+<img alt="image-20210428123720350" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210428123720350.png" />
+<p class="caption"><span class="caption-text">image-20210428123720350</span><a class="headerlink" href="#id10" title="永久链接至图片">¶</a></p>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>组文件<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>可以使用以下两个函数来查看组名或数值组ID：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;grp.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">group</span><span class="o">*</span> <span class="n">getgrgid</span><span class="p">(</span><span class="kt">gid_t</span> <span class="n">gid</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">group</span><span class="o">*</span> <span class="n">getgrnam</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">);</span>
+<span class="c1">// 成功返回指针，出错或者到达文件尾端，则返回NULL</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">group</span></code>的结构如下图所示：</p>
+<div class="figure align-default" id="id11">
+<img alt="image-20210428124014848" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210428124014848.png" />
+<p class="caption"><span class="caption-text">image-20210428124014848</span><a class="headerlink" href="#id11" title="永久链接至图片">¶</a></p>
+</div>
+<p>可以使用以下几个函数来搜索整个组文件：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;grp.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">group</span><span class="o">*</span> <span class="n">getgrent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="c1">// 成功返回指针，出错或者到达文件尾端，返回NULL</span>
+<span class="kt">void</span> <span class="nf">setgrent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">endgrent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id">
+<h2>附属组ID<a class="headerlink" href="#id" title="永久链接至标题">¶</a></h2>
+<p>可以通过以下函数来获取和设置附属组ID：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">getgroups</span><span class="p">(</span><span class="kt">int</span> <span class="n">gidsetsize</span><span class="p">,</span> <span class="n">git_t</span> <span class="n">grouplist</span><span class="p">[]);</span>
+<span class="c1">// 成功返回附属组ID数量，出错返回-1</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;grp.h&gt;</span><span class="c1">    // in linux</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">setgroups</span><span class="p">(</span><span class="kt">int</span> <span class="n">ngroups</span><span class="p">,</span> <span class="k">const</span> <span class="n">git_t</span> <span class="n">grouplist</span><span class="p">[]);</span>
+<span class="kt">int</span> <span class="nf">initgroups</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">username</span><span class="p">,</span> <span class="kt">gid_t</span> <span class="n">basegid</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>getgroups将进程所属用户的各附属组ID填写到数组grouplist中，填写入该数组的附属组ID数最多为gidsetsize个。实际填写到数组中的附属组ID数由函数返回。若gidsetsize为0，则函数只返回附属组ID数，而对数组grouplist则不做修改。</p></li>
+<li><p>setgroups可由超级用户调用以便为调用进程设置附属组ID表。grouplist是组ID数组，而ngroups说明了数组中的元素数。ngroups的值不能大于NGROUPS_MAX。</p></li>
+<li><p>initgroups读整个组文件（用数getgrent、setgrent和endgrent），然后对username确定其组的成员关系。然后，它调用setgroups，以便为该用户初始化附属组ID表。除了在组文件中找到
+username所在的所有组，initgroups也在附属组ID表中包括了basegid。basegid是username在口令文件中的组ID。</p></li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h2>其他数据文件<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<div class="figure align-default" id="id12">
+<img alt="image-20210428133409728" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210428133409728.png" />
+<p class="caption"><span class="caption-text">image-20210428133409728</span><a class="headerlink" href="#id12" title="永久链接至图片">¶</a></p>
+</div>
+</div>
+<div class="section" id="id6">
+<h2>登录账户记录<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<p>记录所用的结构体：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">utmp</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">ut_line</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>    <span class="c1">// tty line: &quot;ttyh0&quot;, &quot;ttyp0&quot;, ...</span>
+    <span class="kt">char</span> <span class="n">ut_name</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>    <span class="c1">// login name</span>
+    <span class="kt">long</span> <span class="n">ut_time</span><span class="p">;</span>       <span class="c1">// seconds since Epoch</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>登录时，login程序填写此类型结构，将其写入到utmp文件和wtmp文件中。</p>
+<p>注销时，init进程将utmp文件中相应的记录擦除（每个字节都填以null字节），并将一个新记录添写到wtmp文件中。</p>
+<p>在wtmp文件的注销记录中，ut_name字段清除为0。</p>
+<p>在系统再启动时，以及更改系统时间和日期的前后，都在wtmp文件中追加写特殊的记录项。</p>
+<p>who(1)程序读取utmp文件，并以可读格式打印其内容。</p>
+<p>last(1)命令，它读wtmp文件并打印所选择的记录。</p>
+</div>
+<div class="section" id="id7">
+<h2>系统标识<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<p>可以使用uname函数来查看与操作系统相关信息：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/utsname.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">uname</span><span class="p">(</span><span class="k">struct</span> <span class="nc">utsname</span><span class="o">*</span> <span class="n">name</span><span class="p">);</span>
+<span class="c1">// 成功返回非负值，出错返回-1</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">utsname</span></code>的结构：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">utsname</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">sysname</span><span class="p">[];</span>     <span class="c1">// name of the OS</span>
+    <span class="kt">char</span> <span class="n">nodename</span><span class="p">[];</span>    <span class="c1">// name of this node</span>
+    <span class="kt">char</span> <span class="n">release</span><span class="p">[];</span>     <span class="c1">// current release of OS</span>
+    <span class="kt">char</span> <span class="n">version</span><span class="p">[];</span>     <span class="c1">// current version of this release</span>
+    <span class="kt">char</span> <span class="n">machine</span><span class="p">[];</span>     <span class="c1">// name of hardware type</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>可以使用uname(1)来打印utsname中的信息。</p>
+<p>可以使用gethostname函数来查看主机名：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">gethostname</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">namelen</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>可以通过hostname(1)命令来获取和设置主机名。</p>
+</div>
+<div class="section" id="id8">
+<h2>时间和日期例程<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h2>
+<p>time函数返回当前时间和日期。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
+
+<span class="kt">time_t</span> <span class="nf">time</span><span class="p">(</span><span class="kt">time_t</span> <span class="o">*</span><span class="n">calptr</span><span class="p">);</span>
+<span class="c1">// 成功返回时间值，出错返回-1</span>
+</pre></div>
+</div>
+<p>还可以通过clock_gettime函数来获取指定时钟的时间：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/time.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">clock_gettime</span><span class="p">(</span><span class="kt">clockid_t</span> <span class="n">clock_id</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">timespec</span> <span class="o">*</span><span class="n">tsp</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">clock_id</span></code>的标准值：</p>
+<div class="figure align-default" id="id13">
+<img alt="image-20210428134858155" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210428134858155.png" />
+<p class="caption"><span class="caption-text">image-20210428134858155</span><a class="headerlink" href="#id13" title="永久链接至图片">¶</a></p>
+</div>
+<p>当时钟ID设置为CLOCK_REALTIME时，clock_gettime函数提供了与time函数类似的功能，不过在系统支持高精度时间值的情况下，clock_gettime可能比time函数得到更高精度的时间值。</p>
+<p>可以使用clock_getres函数来调整时钟精度：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/time.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">clock_getres</span><span class="p">(</span><span class="kt">clockid_t</span> <span class="n">clock_id</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">timespec</span> <span class="o">*</span><span class="n">tsp</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>clock_getres函数把参数tsp指向的timespec结构初始化为与clock_id参数对应的时钟精度。例如，如果精度为1毫秒，则tv_sec字段就是0，tv_nsec字段就是1
+000 000。</p>
+<p>我们可以使用clock_settime来给特定的时钟设定时间：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/time.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">clock_settime</span><span class="p">(</span><span class="kt">clockid_t</span> <span class="n">clock_id</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">timespec</span> <span class="o">*</span><span class="n">tsp</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>SUSv4指定gettimeofday函数现在已弃用。然而，一些程序仍然使用这个函数，因为与time函数相比，gettimeofday提供了更高的精度（可到微秒级）。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/time.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">gettimeofday</span><span class="p">(</span><span class="k">struct</span> <span class="nc">timeval</span><span class="o">*</span> <span class="kr">restrict</span> <span class="n">tp</span><span class="p">,</span> <span class="kt">void</span><span class="o">*</span> <span class="kr">restrict</span> <span class="n">tzp</span><span class="p">);</span> <span class="c1">// tzp的唯一合法值是NULL</span>
+<span class="c1">// 总是返回0</span>
+</pre></div>
+</div>
+<p>可以使用localtime和gmtime将日历时间转换成分解的时间：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">tm</span> <span class="o">*</span><span class="n">gmtime</span><span class="p">(</span><span class="k">const</span> <span class="kt">time_t</span> <span class="o">*</span><span class="n">calptr</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">tm</span> <span class="o">*</span><span class="n">localtime</span><span class="p">(</span><span class="k">const</span> <span class="kt">time_t</span> <span class="o">*</span><span class="n">calptr</span><span class="p">);</span>
+<span class="c1">// 成功返沪指向分解的tm结构的指针，出错返回NULL</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">tm</span></code>的结构为：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">tm</span> <span class="p">{</span>         <span class="cm">/* a broken-down time */</span>
+    <span class="kt">int</span> <span class="n">tm_sec</span><span class="p">;</span>     <span class="cm">/* seconds after the minute: [0 - 60] */</span>
+    <span class="kt">int</span> <span class="n">tm_min</span><span class="p">;</span>     <span class="cm">/* minutes after the hour: [0 - 59] */</span>
+    <span class="kt">int</span> <span class="n">tm_hour</span><span class="p">;</span>    <span class="cm">/* hours after midnight: [0 - 23] */</span>
+    <span class="kt">int</span> <span class="n">tm_mday</span><span class="p">;</span>    <span class="cm">/* day of the month: [1 - 31] */</span>
+    <span class="kt">int</span> <span class="n">tm_mon</span><span class="p">;</span>     <span class="cm">/* months since January: [0 - 11] */</span>
+    <span class="kt">int</span> <span class="n">tm_year</span><span class="p">;</span>    <span class="cm">/* years since 1900 */</span>
+    <span class="kt">int</span> <span class="n">tm_wday</span><span class="p">;</span>    <span class="cm">/* days since Sunday: [0 - 6] */</span>
+    <span class="kt">int</span> <span class="n">tm_yday</span><span class="p">;</span>    <span class="cm">/* days since January 1: [0 - 365] */</span>
+    <span class="kt">int</span> <span class="n">tm_isdst</span><span class="p">;</span>   <span class="cm">/* daylight saving time flag: &lt;0, 0, &gt;0 */</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>可以通过mktime函数，以本地时间的年、月、日等作为参数，将其变换成time_t值。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
+
+<span class="kt">time_t</span> <span class="nf">mktime</span><span class="p">(</span><span class="k">struct</span> <span class="nc">tm</span> <span class="o">*</span><span class="n">tmptr</span><span class="p">);</span>
+<span class="c1">// 返回值：若成功，返回日历时间；若出错，返回-1</span>
+</pre></div>
+</div>
+<p>可以使用strftime函数来格式化输出时间：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
+
+<span class="kt">size_t</span> <span class="nf">strftime</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">maxsize</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">format</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">tm</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">tmptr</span><span class="p">);</span>
+<span class="kt">size_t</span> <span class="nf">strftime_l</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">maxsize</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">format</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">tm</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">tmptr</span><span class="p">,</span> <span class="n">locale_t</span> <span class="n">locale</span><span class="p">);</span>
+<span class="c1">// 若buf空间足够大则返回存入数组的字符数，否则返回0</span>
+</pre></div>
+</div>
+<p>strftime_l允许调用者将区域指定为参数，除此之外，strftime和strftime_l函数是相同的。</p>
+<p>tmptr参数是要格式化的时间值，由一个指向分解时间值tm结构的指针说明。格式化结果存放在一个长度为maxsize个字符的buf数组中，如果buf长度足以存放格式化结果及一个null终止符，则该函数返回在buf中存放的字符数（不包括null终止符）；否则该函数返回0。</p>
+<p>format参数控制时间值的格式。</p>
+<p>一个使用示例：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">time_t</span> <span class="n">t</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">tm</span><span class="o">*</span> <span class="n">tmp</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">buf1</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+    <span class="kt">char</span> <span class="n">buf2</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+
+    <span class="n">time</span><span class="p">(</span><span class="o">&amp;</span><span class="n">t</span><span class="p">);</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">localtime</span><span class="p">(</span><span class="o">&amp;</span><span class="n">t</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">strftime</span><span class="p">(</span><span class="n">buf1</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="s">&quot;time and date: %r, %a %b %d, %Y&quot;</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;buffer length 16 is too small</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buf1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">strftime</span><span class="p">(</span><span class="n">buf2</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="s">&quot;time and date: %r, %a %b %d, %Y&quot;</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;buffer length 64 is too small</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buf2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>输出结果：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">buffer</span> <span class="n">length</span> <span class="mi">16</span> <span class="ow">is</span> <span class="n">too</span> <span class="n">small</span>
+<span class="n">time</span> <span class="ow">and</span> <span class="n">date</span><span class="p">:</span> <span class="mi">02</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">54</span> <span class="n">PM</span><span class="p">,</span> <span class="n">Wed</span> <span class="n">Apr</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">2021</span>
+</pre></div>
+</div>
+<p>strptime函数是strftime的逆向版本，把字符串时间转换成分解时间。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
+
+<span class="kt">char</span> <span class="o">*</span><span class="nf">strptime</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">buf</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">format</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">tm</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">tmptr</span><span class="p">);</span>
+<span class="c1">// 返回值：指向上次解析的字符的下一个字符的指针；否则，返回NULL</span>
+</pre></div>
+</div>
+<p>格式说明符：</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="APUE-7.html" class="btn btn-neutral float-right" title="进程环境" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="APUE-5.html" class="btn btn-neutral float-left" title="流和FILE对象" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2021, snowzhao
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>守护进程 &mdash; APUE v1 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="高级I/O" href="APUE-14.html" />
+    <link rel="prev" title="线程控制" href="APUE-12.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> APUE
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="APUE-1.html">UNIX基础知识</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-2.html">Unix标准及实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-3.html">文件I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-4.html">文件和目录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-5.html">流和FILE对象</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-6.html">系统数据文件和信息</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-7.html">进程环境</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-8.html">进程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-9.html">进程关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-10.html">信号</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-11.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-12.html">线程控制</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">守护进程</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">守护进程的特征</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">编程规则</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">出错记录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">单实例守护进程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">守护进程的惯例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">客户进程-服务器进程模型</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-14.html">高级I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-15.html">进程间通信</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-16.html">网络IPC：套接字</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-17.html">高级进程间通信</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">APUE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>守护进程</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/APUE-13.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>守护进程<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>守护进程（daemon）是生存期长的一种进程。它们常常在系统引导装入时启动，仅在系统关闭时才终止。它们没有控制终端，在后台运行的。UNIX系统有很多守护进程，它们执行日常事务活动。</p>
+<div class="section" id="id2">
+<h2>守护进程的特征<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>系统进程依赖于操作系统实现。父进程ID为0的各进程通常是内核进程，它们作为系统引导装入过程的一部分而启动。（init是个例外，它是一个由内核在引导装入时启动的用户层次的命令。）内核进程是特殊的，通常存在于系统的整个生命期中。它们以超级用户特权运行，无控制终端，无命令行。</p>
+<p>大多数守护进程都以超级用户（root）特权运行。所有的守护进程都没有控制终端，其终端名设置为问号。内核守护进程以无控制终端方式启动。用户层守护进程缺少控制终端可能是守护进程调用了setsid的结果。大多数用户层守护进程都是进程组的组长进程以及会话的首进程，而且是这些进程组和会话中的唯一进程（rsyslogd是一个例外）。最后，应当注意的是用户层守护进程的父进程是init进程。</p>
+</div>
+<div class="section" id="id3">
+<h2>编程规则<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>编写守护进程程序需要遵循一些基本规则：</p>
+<ol class="arabic simple">
+<li><p>首先要调用umask将文件模式创建屏蔽字设置为一个已知值（通常是0）。</p></li>
+<li><p>调用fork，然后使父进程exit。</p></li>
+<li><p>调用setsid创建一个新会话。使调用进程：（a）成为新会话的首进程，（b）成为一个新进程组的组长进程，（c）没有控制终端。</p></li>
+<li><p>将当前工作目录更改为根目录。或者，某些守护进程还可能会把当前工作目录更改到某个指定位置，并在此位置进行它们的全部工作。例如，行式打印机假脱机守护进程就可能将其工作目录更改到它们的spool目录上。</p></li>
+<li><p>关闭不再需要的文件描述符。</p></li>
+<li><p>某些守护进程打开/dev/null使其具有文件描述符0、1和2，这样，任何一个试图读标准输入、写标准输出或标准错误的库例程都不会产生任何效果。</p></li>
+</ol>
+<p>示例：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;apue.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;syslog.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/resource.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">daemonize</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">cmd</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">fd0</span><span class="p">,</span> <span class="n">fd1</span><span class="p">,</span> <span class="n">fd2</span><span class="p">;</span>
+    <span class="kt">pid_t</span> <span class="n">pid</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">rlimit</span> <span class="n">r1</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">sigaction</span> <span class="n">sa</span><span class="p">;</span>
+
+    <span class="n">umask</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">getrlimit</span><span class="p">(</span><span class="n">RLIMIT_NOFILE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">r1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_quit</span><span class="p">(</span><span class="s">&quot;%s: can&#39;t get file limit&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_quit</span><span class="p">(</span><span class="s">&quot;%s: can&#39;t fork&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">setsid</span><span class="p">();</span>
+    <span class="n">sa</span><span class="p">.</span><span class="n">sa_handler</span> <span class="o">=</span> <span class="n">SIG_IGN</span><span class="p">;</span>
+    <span class="n">sigemptyset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sa</span><span class="p">.</span><span class="n">sa_mask</span><span class="p">);</span>
+    <span class="n">sa</span><span class="p">.</span><span class="n">sa_flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">sigaction</span><span class="p">(</span><span class="n">SIGHUP</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sa</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_quit</span><span class="p">(</span><span class="s">&quot;%s: can&#39;t ignore SIGHUP&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_quit</span><span class="p">(</span><span class="s">&quot;%s: can&#39;t fork&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">chdir</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_quit</span><span class="p">(</span><span class="s">&quot;%s: can&#39;t chdir to /&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">r1</span><span class="p">.</span><span class="n">rlim_max</span> <span class="o">==</span> <span class="n">RLIM_INFINITY</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">r1</span><span class="p">.</span><span class="n">rlim_max</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">r1</span><span class="p">.</span><span class="n">rlim_max</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">close</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">fd0</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/null&quot;</span><span class="p">,</span> <span class="n">O_RDWR</span><span class="p">);</span>
+    <span class="n">fd1</span> <span class="o">=</span> <span class="n">dup</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">fd2</span> <span class="o">=</span> <span class="n">dup</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">openlog</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">LOG_CONS</span><span class="p">,</span> <span class="n">LOG_DAEMON</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fd0</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">fd1</span> <span class="o">!=</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">fd2</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">syslog</span><span class="p">(</span><span class="n">LOG_ERR</span><span class="p">,</span> <span class="s">&quot;unexpected file descriptors %d %d %d&quot;</span><span class="p">,</span> <span class="n">fd0</span><span class="p">,</span> <span class="n">fd1</span><span class="p">,</span> <span class="n">fd2</span><span class="p">);</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>不太明白这个函数到底导致了什么结果，编写的测试程序的结果和想象中有点不同。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id4">
+<h2>出错记录<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>有三种产生日志消息的方法：</p>
+<ol class="arabic simple">
+<li><p>内核例程可以调用log函数。任何一个用户进程都可以通过打开并读/dev/klog设备来读取这些消息。</p></li>
+<li><p>大多数用户进程（守护进程）调用syslog(3)函数来产生日志消息。这使消息被发送至UNIX域数据报套接字/dev/log。</p></li>
+<li><p>无论一个用户进程是在此主机上，还是在通过TCP/IP网络连接到此主机的其他主机上，都可将日志消息发向UDP端口514。注意，syslog函数从不产生这些UDP数据报，它们要求产生此日志消息的进程进行显式的网络编程。</p></li>
+</ol>
+<p>通常，syslogd守护进程读取所有3种格式的日志消息。此守护进程在启动时读一个配置文件，其文件名一般为/etc/syslog.conf，该文件决定了不同种类的消息应送向何处。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;syslog.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">openlog</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">ident</span><span class="p">,</span> <span class="kt">int</span> <span class="n">option</span><span class="p">,</span> <span class="kt">int</span> <span class="n">facility</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">syslog</span><span class="p">(</span><span class="kt">int</span> <span class="n">priority</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">format</span><span class="p">,</span> <span class="p">...);</span>
+<span class="kt">void</span> <span class="nf">closelog</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">setlogmask</span><span class="p">(</span><span class="kt">int</span> <span class="n">maskpri</span><span class="p">);</span>
+<span class="c1">// 返回之前的日志记录优先级屏蔽字</span>
+</pre></div>
+</div>
+<p>调用openlog是可选择的。如果不调用openlog，则在第一次调用syslog时，自动调用openlog。</p>
+<p>调用
+closelog也是可选择的，因为它只是关闭曾被用于与syslogd守护进程进行通信的描述符。</p>
+<p>调用openlog
+使我们可以指定一个ident，以后，此ident将被加至每则日志消息中。ident一般是程序的名称（如cron、inetd）。</p>
+<p>option参数是指定各种选项的位屏蔽：</p>
+<p><img alt="image0" src="https://gitee.com/snow_zhao/img/raw/master/img/Image00303.jpg" /></p>
+<p>facility参数：</p>
+<p>priority参数是facility和level的组合。</p>
+<p>level的可能取值(优先级从高到低排序)：</p>
+<p>如果不调用openlog，或者以facility为0来调用它，那么在调用syslog时，可将facility作为priority参数的一个部分进行说明。</p>
+<p>setlogmask函数用于设置进程的记录优先级屏蔽字。它返回调用它之前的屏蔽字。</p>
+<p>当设置了记录优先级屏蔽字时，各条消息除非已在记录优先级屏蔽字中进行了设置，否则将不被记录。</p>
+<blockquote>
+<div><p>注意，试图将记录优先级屏蔽字设置为0并不会有什么作用。</p>
+</div></blockquote>
+<p>很多平台还提供了syslog的一种变体：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;syslog.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdarg.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">vsyslog</span><span class="p">(</span><span class="kt">int</span> <span class="n">priority</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">format</span><span class="p">,</span> <span class="kt">va_list</span> <span class="n">arg</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>单实例守护进程<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<p>为了正常运作，某些守护进程会实现为，在任一时刻只运行该守护进程的一个副本。</p>
+<p>文件和记录锁机制为一种方法提供了基础，该方法保证一个守护进程只有一个副本在运行。如果每一个守护进程创建一个有固定名字的文件，并在该文件的整体上加一把写锁，那么只允许创建一把这样的写锁。在此之后创建写锁的尝试都会失败，这向后续守护进程副本指明已有一个副本正在运行。</p>
+<p>文件和记录锁提供了一种方便的互斥机制。如果守护进程在一个文件的整体上得到一把写锁，那么在该守护进程终止时，这把锁将被自动删除。</p>
+<p>示例程序：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;syslog.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;errno.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/stat.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#define LOCKFILE &quot;/var/run/daemon.pid&quot;</span>
+<span class="cp">#define LOCKMODE (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)</span>
+
+<span class="k">extern</span> <span class="kt">int</span> <span class="n">lockfile</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="nf">already_running</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+    <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">LOCKFILE</span><span class="p">,</span> <span class="n">O_RDWR</span><span class="o">|</span><span class="n">O_CREAT</span><span class="p">,</span> <span class="n">LOCKMODE</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">syslog</span><span class="p">(</span><span class="n">LOG_ERR</span><span class="p">,</span> <span class="s">&quot;can&#39;t open %s: %s&quot;</span><span class="p">,</span> <span class="n">LOCKFILE</span><span class="p">,</span> <span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">lockfile</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">errno</span> <span class="o">==</span> <span class="n">EACCES</span> <span class="o">||</span> <span class="n">errno</span> <span class="o">==</span> <span class="n">EAGAIN</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">syslog</span><span class="p">(</span><span class="n">LOG_ERR</span><span class="p">,</span> <span class="s">&quot;can&#39;t lock %s: %s&quot;</span><span class="p">,</span> <span class="n">LOCKFILE</span><span class="p">,</span> <span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">ftruncate</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">sprintf</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="s">&quot;%ld&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">getpid</span><span class="p">());</span>
+    <span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>不太懂lockfile函数在哪，没找到:sob:。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id6">
+<h2>守护进程的惯例<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<p>在UNIX系统中，守护进程遵循下列通用惯例：</p>
+<ul class="simple">
+<li><p>若守护进程使用锁文件，那么该文件通常存储在/var/run目录中。锁文件的名字通常是name.pid，其中，name是该守护进程或服务的名字。</p></li>
+<li><p>若守护进程支持配置选项，那么配置文件通常存放在/etc目录中。配置文件的名字通常是name.conf。</p></li>
+<li><p>守护进程可用命令行启动，但通常它们是由系统初始化脚本之一（/etc/rc*或/etc/init.d/<a href="#id7"><span class="problematic" id="id8">*</span></a>）启动的。如果在守护进程终止时，应当自动地重新启动它（我们可在/etc/inittab中为该守护进程包括respawn记录项，这样，init就将重新启动该守护进程）。</p></li>
+<li><p>若一个守护进程有一个配置文件，那么当该守护进程启动时会读该文件，但在此之后一般就不会再查看它。若某个管理员更改了配置文件，那么该守护进程可能需要被停止，然后再启动，以使配置文件的更改生效。为避免此种麻烦，某些守护进程将捕捉SIGHUP信号，当它们接收到该信号时，重新读配置文件。</p></li>
+</ul>
+</div>
+<div class="section" id="id9">
+<h2>客户进程-服务器进程模型<a class="headerlink" href="#id9" title="永久链接至标题">¶</a></h2>
+<p>守护进程常常用作服务器进程。</p>
+<p>一般而言，服务器进程等待客户进程与其联系，提出某种类型的服务要求。</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="APUE-14.html" class="btn btn-neutral float-right" title="高级I/O" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="APUE-12.html" class="btn btn-neutral float-left" title="线程控制" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2021, snowzhao
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

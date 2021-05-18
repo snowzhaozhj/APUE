@@ -1,0 +1,867 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>网络IPC：套接字 &mdash; APUE v1 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="高级进程间通信" href="APUE-17.html" />
+    <link rel="prev" title="进程间通信" href="APUE-15.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> APUE
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="APUE-1.html">UNIX基础知识</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-2.html">Unix标准及实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-3.html">文件I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-4.html">文件和目录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-5.html">流和FILE对象</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-6.html">系统数据文件和信息</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-7.html">进程环境</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-8.html">进程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-9.html">进程关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-10.html">信号</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-11.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-12.html">线程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-13.html">守护进程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-14.html">高级I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-15.html">进程间通信</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">网络IPC：套接字</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">套接字描述符</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">寻址</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">字节序</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">地址格式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">地址查询</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">将套接字与地址关联</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">建立连接</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">数据传输</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">套接字选项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">带外数据</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-o">非阻塞和异步I/O</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-17.html">高级进程间通信</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">APUE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>网络IPC：套接字</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/APUE-16.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ipc">
+<h1>网络IPC：套接字<a class="headerlink" href="#ipc" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id1">
+<h2>套接字描述符<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p>套接字描述符在UNIX系统中被当作是一种文件描述符。许多处理文件描述符的函数（如read和write）可以用于处理套接字描述符。</p>
+<p>可以用socket函数来创建一个套接字：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">socket</span><span class="p">(</span><span class="kt">int</span> <span class="n">domain</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">,</span> <span class="kt">int</span> <span class="n">protocol</span><span class="p">);</span>
+<span class="c1">// 成功返回套接字描述符，出错返回-1</span>
+</pre></div>
+</div>
+<p>其中domain的可选值有：</p>
+<div class="figure align-default" id="id11">
+<img alt="image-20210512182404406" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210512182404406.png" />
+<p class="caption"><span class="caption-text">image-20210512182404406</span><a class="headerlink" href="#id11" title="永久链接至图片">¶</a></p>
+</div>
+<p>AF表示地址族(address family)</p>
+<p>参数type确定套接字的类型，有如下可选值：</p>
+<div class="figure align-default" id="id12">
+<img alt="image-20210512182534400" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210512182534400.png" />
+<p class="caption"><span class="caption-text">image-20210512182534400</span><a class="headerlink" href="#id12" title="永久链接至图片">¶</a></p>
+</div>
+<p>参数protocol的可能值有：</p>
+<div class="figure align-default" id="id13">
+<img alt="image-20210512182648987" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210512182648987.png" />
+<p class="caption"><span class="caption-text">image-20210512182648987</span><a class="headerlink" href="#id13" title="永久链接至图片">¶</a></p>
+</div>
+<p>参数protocol通常是0，表示为给定的域和套接字类型选择默认协议。当对同一域和套接字类型支持多个协议时，可以使用protocol选择一个特定协议。</p>
+<p>数据报(SOCK_DGRAM)提供无连接服务。</p>
+<p>字节流(SOCK_STREAM)提供字节流服务(有连接的)，应用程序分辨不出报文的界限。从SOCK_STREAM套接字读数据时，它也许不会返回所有由发送进程所写的字节数。要获得发送过来的所有数据，可能需要经过多次函数调用。</p>
+<p>SOCK_DGRAM的默认协议是UDP，SOCK_STREAM的默认协议是TCP。</p>
+<p>SOCK_SEQPACKET套接字和SOCK_STREAM套接字很类似，只是从该套接字得到的是基于报文的服务而不是字节流服务。也就是说从SOCK_SEQPACKET套接字接收的数据量与对方所发送的一致。</p>
+<p>SOCK_RAW套接字提供一个数据报接口，用于直接访问下面的网络层（即因特网域中的
+IP层）。使用这个接口时，应用程序负责构造自己的协议头部，因为传输协议（如TCP和UDP）被绕过了。</p>
+<blockquote>
+<div><p>当创建一个原始套接字时，需要有超级用户特权。</p>
+</div></blockquote>
+<p>常见I/O函数对套接字描述符的支持：</p>
+<div class="figure align-default" id="id14">
+<img alt="image-20210512183520951" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210512183520951.png" />
+<p class="caption"><span class="caption-text">image-20210512183520951</span><a class="headerlink" href="#id14" title="永久链接至图片">¶</a></p>
+</div>
+<p>套接字通信是双向的。可以采用shutdown函数来禁止一个套接字的I/O。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">shutdown</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">how</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回−1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>如果how是SHUT_RD（关闭读端），那么无法从套接字读取数据。</p></li>
+<li><p>如果how是SHUT_WR（关闭写端），那么无法使用套接字发送数据。</p></li>
+<li><p>如果how是SHUT_RDWR，则既无法读取数据，又无法发送数据。</p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>寻址<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id3">
+<h3>字节序<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
+<p>大端字节序：最高有效字节的字节地址最低。</p>
+<p>小端字节序：最低有效字节的字节地址最低。</p>
+<p>TCP/IP协议栈使用大端字节序。</p>
+<p>4个用来在处理器字节序和网络字节序中转换的函数：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp"></span>
+
+<span class="kt">uint32_t</span> <span class="nf">htonl</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">hostint32</span><span class="p">);</span>
+<span class="c1">// 返回以网络字节序表示的32位整数</span>
+<span class="kt">uint16_t</span> <span class="nf">htons</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">hostint16</span><span class="p">);</span>
+<span class="c1">// 返回以网络字节序表示的16位整数</span>
+<span class="kt">uint32_t</span> <span class="nf">ntohl</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">netint32</span><span class="p">);</span>
+<span class="c1">// 返回以主机字节序表示的32位整数</span>
+<span class="kt">uint16_t</span> <span class="nf">ntohs</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">netint16</span><span class="p">);</span>
+<span class="c1">// 返回以主机字节序表示的16位整数</span>
+</pre></div>
+</div>
+<p>h代表主机host，n代表网络network，l代表长long，s代表短short。</p>
+</div>
+<div class="section" id="id4">
+<h3>地址格式<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
+<p>一个地址标识一个特定通信域的套接字端点。</p>
+<p>为使不同格式地址能够传入到套接字函数，地址会被强制转换成一个<strong>通用的地址结构</strong>sockaddr：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">sockaddr</span> <span class="p">{</span>
+    <span class="n">sa_family_t</span> <span class="n">sa_family</span><span class="p">;</span>  <span class="c1">// address family: AF_INET, AF_INET6, ...</span>
+    <span class="kt">char</span> <span class="n">sa_data</span><span class="p">[];</span>         <span class="c1">// variable-length address</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>套接字的实现可以自由地添加额外的成员并且定义sa_data成员的大小。</p>
+<p>因特网地址定义在&lt;netinet/in.h&gt;头文件中。IPv4中套接字地址用结构sockaddr_in表示：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">in_addr</span> <span class="p">{</span>
+    <span class="n">in_addr_t</span> <span class="n">s_addr</span><span class="p">;</span>   <span class="c1">// IPv4 address</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">sockaddr_in</span> <span class="p">{</span>
+    <span class="n">sa_family_t</span> <span class="n">sin_family</span><span class="p">;</span> <span class="c1">// address family</span>
+    <span class="n">in_port_t</span> <span class="n">sin_port</span><span class="p">;</span>     <span class="c1">// port number</span>
+    <span class="k">struct</span> <span class="nc">in_addr</span> <span class="n">sin_addr</span><span class="p">;</span><span class="c1">// IPv4 address</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>而IPv6中使用结构sockaddr_in6表示：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">in6_addr</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">s6_addr</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>    <span class="c1">// IPv6 address</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">sockaddr_in6</span> <span class="p">{</span>
+    <span class="n">sa_family_t</span> <span class="n">sin6_family</span><span class="p">;</span>    <span class="c1">// address family</span>
+    <span class="n">in_port_t</span> <span class="n">sin6_port</span><span class="p">;</span>        <span class="c1">// port number</span>
+    <span class="kt">uint32_t</span> <span class="n">sin_flowinfo</span><span class="p">;</span>      <span class="c1">// traffic class and flow info</span>
+    <span class="k">struct</span> <span class="nc">in6_addr</span> <span class="n">sin6_addr</span><span class="p">;</span>  <span class="c1">// IPv6 address</span>
+    <span class="kt">uint32_t</span> <span class="n">sin6_scope_id</span><span class="p">;</span>     <span class="c1">// set of interfaces for scope</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>这些都是SUS的定义，具体实现可以自由添加更多的字段。</p>
+<p><strong>尽管sockaddr_in与sockaddr_in6结构相差比较大，但它们均被强制转换成sockaddr结构输入到套接字例程中。</strong></p>
+<p>套接字二进制地址格式和点分十进制字符表示之间的相互转换：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp"></span>
+
+<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">inet_ntop</span><span class="p">(</span><span class="kt">int</span> <span class="n">domain</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">str</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="n">size</span><span class="p">);</span>
+<span class="c1">// 成功返回地址字符串指针，出错返回NULL</span>
+<span class="kt">int</span> <span class="nf">inet_pton</span><span class="p">(</span><span class="kt">int</span> <span class="n">domain</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">str</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">addr</span><span class="p">);</span>
+<span class="c1">// 成功返回1，格式无效返回0，出错返回-1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>inet_ntop将网络字节序的二进制地址转换成文本字符串格式。</p></li>
+<li><p>inet_pton将文本字符串格式转换成网络字节序的二进制地址。</p></li>
+</ul>
+<p>参数domain仅支持两个值：AF_INET和AF_INET6。</p>
+<p>参数size通常取INET_ADDRSTRLEN来存放一个表示IPv4地址的文本字符串；取INET6_ADDRSTRLEN来存放一个表示IPv6地址的文本字符串。</p>
+</div>
+<div class="section" id="id5">
+<h3>地址查询<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h3>
+<p>可以调用gethostent函数来查找给定计算机系统的主机信息：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;netdb.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">hostent</span> <span class="o">*</span><span class="n">gethostent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="c1">// 成功返回指针，出错返回NULL</span>
+<span class="kt">void</span> <span class="nf">sethostent</span><span class="p">(</span><span class="kt">int</span> <span class="n">stayopen</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">endhostent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>如果主机数据库文件没有打开，gethostent会打开它。函数gethostent返回文件中的下一个条目。</p>
+<p>函数sethostent会打开文件，如果文件已经被打开，那么将其回绕。当stayopen参数设置成非0值时，调用gethostent之后，文件将依然是打开的。</p>
+<blockquote>
+<div><p>不太明白回绕是什么意思。</p>
+</div></blockquote>
+<p>函数endhostent可以关闭文件。</p>
+<p>当gethostent返回时，会得到一个指向hostent结构的指针，该结构可能包含一个静态的数据缓冲区，<strong>每次调用gethostent，缓冲区都会被覆盖</strong>。</p>
+<p>其中struct hostent结构至少包含以下成员：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">hostent</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">h_name</span><span class="p">;</span>       <span class="c1">// name of host</span>
+    <span class="kt">char</span> <span class="o">**</span><span class="n">h_aliases</span><span class="p">;</span>   <span class="c1">// pointer to alternate host name array</span>
+    <span class="kt">int</span> <span class="n">h_addrtype</span><span class="p">;</span>     <span class="c1">// address type</span>
+    <span class="kt">int</span> <span class="n">h_length</span><span class="p">;</span>       <span class="c1">// length in bytes of address</span>
+    <span class="kt">char</span> <span class="o">**</span><span class="n">h_addr_list</span><span class="p">;</span> <span class="c1">// pointer to array of network addresses</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>返回的地址按照网络字节序。地址类型(h_addrtype)是AF_INET系列常量。</p>
+<p>可以使用以下函数来获取网络名和网络编号：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;netdb.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">netent</span> <span class="o">*</span><span class="n">getnetbyaddr</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">net</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">netent</span> <span class="o">*</span><span class="n">getnetbyname</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">netent</span> <span class="o">*</span><span class="n">getnetent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="c1">// 成功返回指针，出错返回NULL</span>
+<span class="kt">void</span> <span class="nf">setnetent</span><span class="p">(</span><span class="kt">int</span> <span class="n">stayopen</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">endnetent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>其中netent的结构至少包含以下字段：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">netent</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">n_name</span><span class="p">;</span>       <span class="c1">// network name</span>
+    <span class="kt">char</span> <span class="o">**</span><span class="n">n_aliases</span><span class="p">;</span>   <span class="c1">// alternate network name array pointer</span>
+    <span class="kt">int</span> <span class="n">n_addrtype</span><span class="p">;</span>     <span class="c1">// address type</span>
+    <span class="kt">uint32_t</span> <span class="n">n_net</span><span class="p">;</span>     <span class="c1">// network number</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>网络编号按照网络字节序返回。地址类型是地址族常量之一（如AF_INET）。</p>
+<p>可以使用以下函数在协议名字和协议编号之间进行映射：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;netdb.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">protoent</span> <span class="o">*</span><span class="n">getprotobyname</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">protoent</span> <span class="o">*</span><span class="n">getprotobynumber</span><span class="p">(</span><span class="kt">int</span> <span class="n">proto</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">protoent</span> <span class="o">*</span><span class="n">getprotoent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="c1">// 成功返回指针，出错返回NULL</span>
+<span class="kt">void</span> <span class="nf">setprotoent</span><span class="p">(</span><span class="kt">int</span> <span class="n">stayopen</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">endprotoent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>其中protoent结构至少包含以下成员：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">protoent</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">p_name</span><span class="p">;</span>       <span class="c1">// protocol name</span>
+    <span class="kt">char</span> <span class="o">**</span><span class="n">p_aliases</span><span class="p">;</span>   <span class="c1">// pointer to alternate protocol name array</span>
+    <span class="kt">int</span> <span class="n">p_proto</span><span class="p">;</span>        <span class="c1">// protocol number</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>服务是由地址的端口号部分表示的。每个服务由一个唯一的众所周知的端口号来支持。可以使用函数getservbyname将一个服务名映射到一个端口号，使用函数getservbyport将一个端口号映射到一个服务名，使用函数getservent顺序扫描服务数据库。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;netdb.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">servent</span> <span class="o">*</span><span class="n">getservbyname</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">proto</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">servent</span> <span class="o">*</span><span class="n">getserbyport</span><span class="p">(</span><span class="kt">int</span> <span class="n">port</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">proto</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">servent</span> <span class="o">*</span><span class="n">getservent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="c1">// 成功返回指针，出错返回NULL</span>
+<span class="kt">void</span> <span class="nf">setservent</span><span class="p">(</span><span class="kt">int</span> <span class="n">stayopen</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">endservent</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>其中servent结构至少包含以下成员：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">servent</span><span class="p">{</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">s_name</span><span class="p">;</span>       <span class="cm">/* service name */</span>
+    <span class="kt">char</span> <span class="o">**</span><span class="n">s_aliases</span><span class="p">;</span>   <span class="cm">/* pointer to alternate service name array */</span>
+    <span class="kt">int</span> <span class="n">s_port</span><span class="p">;</span>         <span class="cm">/* port　number */</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">s_proto</span><span class="p">;</span>      <span class="cm">/* name of protocol */</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>可以使用getaddrinfo函数将一个主机名和一个服务名映射到一个地址：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;netdb.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">getaddrinfo</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">sevice</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">addrinfo</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">hint</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">addrinfo</span> <span class="o">**</span><span class="kr">restrict</span> <span class="n">res</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回非0错误码</span>
+<span class="kt">void</span> <span class="nf">freeaddrinfo</span><span class="p">(</span><span class="k">struct</span> <span class="nc">addrinfo</span> <span class="o">*</span><span class="n">ai</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>getaddrinfo函数返回一个链表结构addrinfo。</p>
+<p>其中addrinfo结构至少包含以下成员：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">addrinfo</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">ai_flags</span><span class="p">;</span>               <span class="c1">// customize behavior</span>
+    <span class="kt">int</span> <span class="n">ai_family</span><span class="p">;</span>              <span class="c1">// address family</span>
+    <span class="kt">int</span> <span class="n">ai_socktype</span><span class="p">;</span>            <span class="c1">// socket type</span>
+    <span class="kt">int</span> <span class="n">ai_protocol</span><span class="p">;</span>            <span class="c1">// protocol</span>
+    <span class="kt">socklen_t</span> <span class="n">ai_addrlen</span><span class="p">;</span>       <span class="c1">// length in bytes of address</span>
+    <span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="n">ai_addr</span><span class="p">;</span>   <span class="c1">// address</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">ai_cannoname</span><span class="p">;</span>         <span class="c1">// canonical name of host</span>
+    <span class="k">struct</span> <span class="nc">addrinfo</span> <span class="o">*</span><span class="n">ai_next</span><span class="p">;</span>   <span class="c1">// next in list</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>freeaddrinfo可以释放一个或多个这种结构，这取决于用ai_next字段链接起来的结构有多少。</p>
+<p>hint是一个用于过滤地址的模板，包括ai_family、ai_flags、ai_protocol和ai_socktype字段。剩余的整数字段必须设置为0，指针字段必须为空。</p>
+<p>其中flags的可选值有：</p>
+<div class="figure align-default" id="id15">
+<img alt="image-20210512220244767" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210512220244767.png" />
+<p class="caption"><span class="caption-text">image-20210512220244767</span><a class="headerlink" href="#id15" title="永久链接至图片">¶</a></p>
+</div>
+<p>如果getaddrinfo失败，需要使用gai_strerror函数将返回的错误码转换为错误消息：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;netdb.h&gt;</span><span class="cp"></span>
+
+<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">gai_strerror</span><span class="p">(</span><span class="kt">int</span> <span class="n">error</span><span class="p">);</span>
+<span class="c1">// 返回指向描述错误的字符串的指针</span>
+</pre></div>
+</div>
+<p>getnameinfo函数将一个地址转换成一个主机名和一个服务名：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;netdb.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">getnameinfo</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="n">alen</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">host</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="n">hostlen</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">service</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="n">servlen</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回非0值</span>
+</pre></div>
+</div>
+<p>套接字地址（addr）被翻译成一个主机名和一个服务名。</p>
+<p>如果host非空，则指向一个长度为hostlen字节的缓冲区用于存放返回的主机名。</p>
+<p>如果service非空，则指向一个长度为servlen字节的缓冲区用于存放返回的主机名。</p>
+<p>其中flags参数的可选值如下：</p>
+<div class="figure align-default" id="id16">
+<img alt="image-20210512220753566" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210512220753566.png" />
+<p class="caption"><span class="caption-text">image-20210512220753566</span><a class="headerlink" href="#id16" title="永久链接至图片">¶</a></p>
+</div>
+<p>一个示例程序：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;apue.h&quot;</span><span class="cp"></span>
+<span class="cp">#if defined(SOLARIS)</span>
+<span class="cp">#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp"></span>
+<span class="cp">#endif</span>
+<span class="cp">#include</span> <span class="cpf">&lt;netdb.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp"></span>
+<span class="cp">#if defined(BSD)</span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp"></span>
+<span class="cp">#endif</span>
+
+<span class="kt">void</span> <span class="nf">print_family</span><span class="p">(</span><span class="k">struct</span> <span class="nc">addrinfo</span><span class="o">*</span> <span class="n">aip</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot; family &quot;</span><span class="p">);</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_family</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="nl">AF_INET</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;inet&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">AF_INET6</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;inet6&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">AF_UNIX</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;unix&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">AF_UNSPEC</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;unspecified&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;unknown&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">print_type</span><span class="p">(</span><span class="k">struct</span> <span class="nc">addrinfo</span><span class="o">*</span> <span class="n">aip</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot; type &quot;</span><span class="p">);</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_socktype</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="nl">SOCK_STREAM</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;stream&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">SOCK_DGRAM</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;datagram&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">SOCK_SEQPACKET</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;seqpacket&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">SOCK_RAW</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;raw&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;unknown (%d)&quot;</span><span class="p">,</span> <span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_socktype</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">print_protocol</span><span class="p">(</span><span class="k">struct</span> <span class="nc">addrinfo</span><span class="o">*</span> <span class="n">aip</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot; protocol &quot;</span><span class="p">);</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_protocol</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;default&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">IPPROTO_TCP</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;TCP&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">IPPROTO_UDP</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;UDP&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">IPPROTO_RAW</span><span class="p">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;raw&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;unknow (%d)&quot;</span><span class="p">,</span> <span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_protocol</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">print_flags</span><span class="p">(</span><span class="k">struct</span> <span class="nc">addrinfo</span><span class="o">*</span> <span class="n">aip</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;flags&quot;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_flags</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot; 0&quot;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_flags</span> <span class="o">&amp;</span> <span class="n">AI_PASSIVE</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot; passive&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_flags</span> <span class="o">&amp;</span> <span class="n">AI_CANONNAME</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot; canon&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_flags</span> <span class="o">&amp;</span> <span class="n">AI_NUMERICHOST</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot; numhost&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_flags</span> <span class="o">&amp;</span> <span class="n">AI_NUMERICSERV</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot; numserv&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_flags</span> <span class="o">&amp;</span> <span class="n">AI_V4MAPPED</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot; v4mapped&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_flags</span> <span class="o">&amp;</span> <span class="n">AI_ALL</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot; all&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="nc">addrinfo</span> <span class="o">*</span><span class="n">ailist</span><span class="p">,</span> <span class="o">*</span><span class="n">aip</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">addrinfo</span> <span class="n">hint</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">sockaddr_in</span> <span class="o">*</span><span class="n">sinp</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">addr</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">abuf</span><span class="p">[</span><span class="n">INET_ADDRSTRLEN</span><span class="p">];</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_quit</span><span class="p">(</span><span class="s">&quot;usage: %s &lt;nodename&gt; &lt;service&gt;&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="p">}</span>
+    <span class="n">hint</span><span class="p">.</span><span class="n">ai_flags</span> <span class="o">=</span> <span class="n">AI_CANONNAME</span><span class="p">;</span>
+    <span class="n">hint</span><span class="p">.</span><span class="n">ai_family</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">hint</span><span class="p">.</span><span class="n">ai_socktype</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">hint</span><span class="p">.</span><span class="n">ai_protocol</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">hint</span><span class="p">.</span><span class="n">ai_addrlen</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">hint</span><span class="p">.</span><span class="n">ai_canonname</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">hint</span><span class="p">.</span><span class="n">ai_addr</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">hint</span><span class="p">.</span><span class="n">ai_next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">err</span> <span class="o">=</span> <span class="n">getaddrinfo</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">hint</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ailist</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_quit</span><span class="p">(</span><span class="s">&quot;getaddrinfo error: %s&quot;</span><span class="p">,</span> <span class="n">gai_strerror</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">aip</span> <span class="o">=</span> <span class="n">ailist</span><span class="p">;</span> <span class="n">aip</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">aip</span> <span class="o">=</span> <span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_next</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">print_flags</span><span class="p">(</span><span class="n">aip</span><span class="p">);</span>
+        <span class="n">print_family</span><span class="p">(</span><span class="n">aip</span><span class="p">);</span>
+        <span class="n">print_protocol</span><span class="p">(</span><span class="n">aip</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n\t</span><span class="s">host %s&quot;</span><span class="p">,</span> <span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_canonname</span> <span class="o">?</span> <span class="n">aip</span><span class="o">-&gt;</span><span class="nl">ai_canonname</span> <span class="p">:</span> <span class="s">&quot;-&quot;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_family</span> <span class="o">==</span> <span class="n">AF_INET</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">sinp</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">sockaddr_in</span><span class="o">*</span><span class="p">)</span><span class="n">aip</span><span class="o">-&gt;</span><span class="n">ai_addr</span><span class="p">;</span>
+            <span class="n">addr</span> <span class="o">=</span> <span class="n">inet_ntop</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sinp</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">,</span> <span class="n">abuf</span><span class="p">,</span> <span class="n">INET_ADDRSTRLEN</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot; address %s&quot;</span><span class="p">,</span> <span class="n">addr</span> <span class="o">?</span> <span class="nl">addr</span> <span class="p">:</span> <span class="s">&quot;unknown&quot;</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot; port %d&quot;</span><span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">sinp</span><span class="o">-&gt;</span><span class="n">sin_port</span><span class="p">));</span>
+        <span class="p">}</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>将套接字与地址关联<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h3>
+<p>使用bind函数来将地址和套接字关联起来：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">bind</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="n">len</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>如果调用connect或listen时，还没有将地址绑定到套接字上，系统会选一个地址绑定到套接字上。</p>
+</div></blockquote>
+<p>可以调用getsockname函数来获取绑定到套接字上的地址：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">getsockname</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">alenp</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>调用getsockname之前，alenp指向整数指定缓冲区sockaddr的长度。返回时，该整数会被设置成返回地址的大小。如果地址和提供的缓冲区长度不匹配，地址会被自动截断而不报错。如果当前没有地址绑定到该套接字，则其结果是未定义的。</p>
+<p>如果套接字已经和对等方连接，可以调用getpeername函数来找到对方的地址。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">getpeername</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">alenp</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>建立连接<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<p>在处理一个面向连接的网络服务（SOCK_STREAM或SOCK_SEQPACKET）的时候，需要在请求服务的进程套接字（客户端）和提供服务的进程套接字（服务器）之间建立一个连接。</p>
+<p>使用connect函数来建立连接：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">connect</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="n">len</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>addr参数指定我们想要与之通信的服务器地址。</p>
+<p>如果sockfd此时没有绑定到一个地址，connect会给调用者绑定一个默认地址。</p>
+<blockquote>
+<div><p>connect函数还可以用于无连接的网络服务（SOCK_DGRAM）。如果用SOCK_DGRAM套接字调用connect，传送的报文的目标地址会设置成connect调用中所指定的地址，这样每次传送报文时就不需要再提供地址。并且仅能接收来自指定地址的报文。</p>
+</div></blockquote>
+<p>服务器调用listen函数来宣告它愿意接受连接请求：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">listen</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">backlog</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>backlog参数指定了该进程所要入队的未完成连接请求数量。队列满了之后，系统就会拒绝多余的连接请求。</p>
+<p>调用了listen后套接字就能接收连接请求。可以使用accept函数获得连接请求并建立连接。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">accept</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">len</span><span class="p">);</span>
+<span class="c1">// 成功返回文件(套接字)描述符，出错返回−1</span>
+</pre></div>
+</div>
+<p>返回的文件描述符是套接字描述符，该描述符连接到调用connect的客户端。这个新的套接字描述符和原始套接字（sockfd）具有相同的套接字类型和地址族。传给accept的原始套接字没有关联到这个连接，而是继续保持可用状态并接收其他连接请求。</p>
+<p>返回时，accept会将addr设置为客户端的地址，并且更新指向len的整数来反映该地址的大小。不关心这两个参数可将两者设置为NULL。</p>
+<p>如果没有连接请求在等待，accept会阻塞直到一个请求到来。如果sockfd处于非阻塞模式，accept会返回−1，并将errno设置为EAGAIN或EWOULDBLOCK。</p>
+</div>
+<div class="section" id="id8">
+<h2>数据传输<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h2>
+<p>有3个用来发送数据的函数。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">ssize_t</span> <span class="nf">send</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">);</span>
+<span class="c1">// 成功返回发送的字节数，出错返回-1</span>
+</pre></div>
+</div>
+<p>使用send时，套接字必须已经连接。</p>
+<p>buf参数和nbytes参数与write函数中相同。</p>
+<p>flags参数的可选值如下：</p>
+<div class="figure align-default" id="id17">
+<img alt="image-20210512223610727" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210512223610727.png" />
+<p class="caption"><span class="caption-text">image-20210512223610727</span><a class="headerlink" href="#id17" title="永久链接至图片">¶</a></p>
+</div>
+<blockquote>
+<div><p>即使send成功返回，也并不表示连接的另一端的进程就一定接收了数据。我们所能保证的只是当send成功返回时，数据已经被无错误地发送到网络驱动程序上。</p>
+<p>对于支持报文边界的协议，如果尝试发送的单个报文的长度超过协议所支持的最大长度，那么send会失败，并将errno设为EMSGSIZE。对于字节流协议，send会阻塞直到整个数据传输完成。</p>
+</div></blockquote>
+<p>sendto在send的基础上可以指定一个目标地址(用于无连接的套接字)：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">ssize_t</span> <span class="nf">sendto</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="n">destaddr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="n">destlen</span><span class="p">);</span>
+<span class="c1">// 成功返回发送的字节数，出错返回-1</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>对于面向连接的套接字，目标地址会被忽略。</p>
+</div></blockquote>
+<p>sendmsg函数类似于writev函数：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">ssize_t</span> <span class="nf">sendmsg</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">msghdr</span> <span class="o">*</span><span class="n">msg</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">);</span>
+<span class="c1">// 成功返回发送的字节数，出错返回-1</span>
+</pre></div>
+</div>
+<p>其中msghdr的结构如下：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">msghdr</span> <span class="p">{</span>
+    <span class="kt">void</span> <span class="o">*</span><span class="n">msg_name</span><span class="p">;</span>             <span class="c1">// optional address</span>
+    <span class="kt">socklen_t</span> <span class="n">msg_namelen</span><span class="p">;</span>      <span class="c1">// address size in bytes</span>
+    <span class="k">struct</span> <span class="nc">iovec</span> <span class="o">*</span><span class="n">msg_iov</span><span class="p">;</span>      <span class="c1">// array of I/O buffers</span>
+    <span class="kt">int</span> <span class="n">msg_iovlen</span><span class="p">;</span>             <span class="c1">// number of elements in array</span>
+    <span class="kt">void</span> <span class="o">*</span><span class="n">msg_control</span><span class="p">;</span>          <span class="c1">// ancillary data, 辅助数据</span>
+    <span class="kt">socklen_t</span> <span class="n">msg_controllen</span><span class="p">;</span>   <span class="c1">// number of ancillary data</span>
+    <span class="kt">int</span> <span class="n">msg_flags</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>有三个用来接受数据的函数：</p>
+<p>recv函数类似于read函数：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">ssize_t</span> <span class="nf">recv</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">);</span>
+<span class="c1">// 返回数据的字节长度，若无可用数据或对等方已经按序结束则返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>其中flags参数的可选值有：</p>
+<div class="figure align-default" id="id18">
+<img alt="image-20210512225054807" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210512225054807.png" />
+<p class="caption"><span class="caption-text">image-20210512225054807</span><a class="headerlink" href="#id18" title="永久链接至图片">¶</a></p>
+</div>
+<p>当指定MSG_PEEK标志时，可以查看下一个要读取的数据但不真正取走它。当再次调用read或其中一个recv函数时，会返回刚才查看的数据。</p>
+<p>对于SOCK_STREAM套接字，接收的数据可以比预期的少。MSG_WAITALL标志会阻止这种行为，直到所请求的数据全部返回，recv函数才会返回。对于SOCK_DGRAM和SOCK_SEQPACKET套接字，MSG_WAITALL
+标志没有改变什么行为，因为这些基于报文的套接字类型一次读取就返回整个报文。</p>
+<p>如果发送者已经调用shutdown来结束传输，或者网络协议支持按默认的顺序关闭并且发送端已经关闭，那么当所有的数据接收完毕后，recv返回0。</p>
+<p>可以使用recvfrom函数来得到数据发送者的源地址：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">ssize_t</span> <span class="nf">recv</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">addrlen</span><span class="p">);</span>
+<span class="c1">// 返回数据的字节长度，若无可用数据或对等方已经按序结束则返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>recvmsg函数类似于readv函数：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">ssize_t</span> <span class="nf">recvmsg</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">msghdr</span> <span class="o">*</span><span class="n">msg</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">);</span>
+<span class="c1">// 返回数据的字节长度，若无可用数据或对等方已经按序结束则返回0，出错返回-1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h2>套接字选项<a class="headerlink" href="#id9" title="永久链接至标题">¶</a></h2>
+<p>可以使用setsockopt函数来设置套接字选项。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">setsockopt</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">option</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">val</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="n">len</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>参数level标识了选项应用的协议。如果选项是通用的套接字层次选项，则level设置成SOL_SOCKET。否则，level设置成控制这个选项的协议编号。对于TCP选项，level是IPPROTO_TCP，对于IP，level是IPPROTO_IP。</p>
+<p>option参数的可选值如下：</p>
+<div class="figure align-default" id="id19">
+<img alt="image-20210512230038747" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210512230038747.png" />
+<p class="caption"><span class="caption-text">image-20210512230038747</span><a class="headerlink" href="#id19" title="永久链接至图片">¶</a></p>
+</div>
+<p>参数val根据选项的不同指向一个数据结构或者一个整数。一些选项是on/off开关。如果整数非0，则启用选项。如果整数为0，则禁止选项。参数len指定了val指向的对象的大小。</p>
+<p>可以使用getsockopt函数来获取选项的当前值：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">getsockopt</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">level</span><span class="p">,</span> <span class="kt">int</span> <span class="n">option</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">val</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="o">*</span><span class="n">restric</span> <span class="n">lenp</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>参数lenp是一个指向整数的指针。在调用getsockopt之前，设置该整数为复制选项缓冲区的长度。如果选项的实际长度大于此值，则选项会被截断。如果实际长度正好小于此值，那么返回时将此值更新为实际长度。</p>
+</div>
+<div class="section" id="id10">
+<h2>带外数据<a class="headerlink" href="#id10" title="永久链接至标题">¶</a></h2>
+<p>带外数据（out-of-band
+data）是一些通信协议所支持的可选功能，与普通数据相比，它允许更高优先级的数据传输。带外数据先行传输，即使传输队列已经有数据。</p>
+<p>TCP支持带外数据，但是UDP不支持。</p>
+<p>TCP将带外数据称为紧急数据（urgent
+data）。TCP仅支持一个字节的紧急数据，但是允许紧急数据在普通数据传递机制数据流之外传输。</p>
+<p>为了产生紧急数据，可以在3个send函数中的任何一个里指定MSG_OOB标志。如果带MSG_OOB标志发送的字节数超过一个时，最后一个字节将被视为紧急数据字节。</p>
+<p>如果通过套接字安排了信号的产生，那么紧急数据被接收时，会发送SIGURG信号。</p>
+<p>可以通过调用以下函数安排进程接收套接字的信号：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">fcntl</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">F_SETOWN</span><span class="p">,</span> <span class="n">pid</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>TCP支持紧急标记（urgent
+mark）的概念，即在普通数据流中紧急数据所在的位置。如果采用套接字选项SO_OOBINLINE，那么可以在普通数据中接收紧急数据。</p>
+<p>可以使用函数sockatmark来判断是否已经到达紧急标记：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">sockatmark</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">);</span>
+<span class="c1">// 返回值：若在标记处，返回1；若没在标记处，返回0；若出错，返回−1</span>
+</pre></div>
+</div>
+<p>当下一个要读取的字节在紧急标志处时，sockatmark返回1。</p>
+</div>
+<div class="section" id="i-o">
+<h2>非阻塞和异步I/O<a class="headerlink" href="#i-o" title="永久链接至标题">¶</a></h2>
+<p>在基于套接字的异步I/O中，启动异步I/O有两个步骤：</p>
+<ol class="arabic simple">
+<li><p>建立套接字所有权，这样信号可以被传递到合适的进程。</p></li>
+<li><p>通知套接字当I/O操作不会阻塞时发信号。</p></li>
+</ol>
+<p>可以使用3种方式来完成第一个步骤。</p>
+<ol class="arabic simple">
+<li><p>在fcntl中使用F_SETOWN命令。</p></li>
+<li><p>在ioctl中使用FIOSETOWN命令。</p></li>
+<li><p>在ioctl中使用SIOCSPGRP命令。</p></li>
+</ol>
+<p>可以使用2种方式完成第二个步骤。</p>
+<ol class="arabic simple">
+<li><p>在fcntl中使用F_SETFL命令并且启用文件标志O_ASYNC。</p></li>
+<li><p>在ioctl中使用FIOASYNC命令。</p></li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="APUE-17.html" class="btn btn-neutral float-right" title="高级进程间通信" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="APUE-15.html" class="btn btn-neutral float-left" title="进程间通信" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2021, snowzhao
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

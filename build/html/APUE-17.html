@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>高级进程间通信 &mdash; APUE v1 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="prev" title="网络IPC：套接字" href="APUE-16.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> APUE
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="APUE-1.html">UNIX基础知识</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-2.html">Unix标准及实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-3.html">文件I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-4.html">文件和目录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-5.html">流和FILE对象</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-6.html">系统数据文件和信息</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-7.html">进程环境</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-8.html">进程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-9.html">进程关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-10.html">信号</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-11.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-12.html">线程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-13.html">守护进程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-14.html">高级I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-15.html">进程间通信</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-16.html">网络IPC：套接字</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">高级进程间通信</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unix">UNIX域套接字</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">命名UNIX域套接字</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getopt">getopt</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">APUE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>高级进程间通信</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/APUE-17.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>高级进程间通信<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<blockquote>
+<div><p>本章偏向于实践，所以书中很多内容不记录到笔记中。我目前掌握这些代码还是有些困难的:sob:。</p>
+</div></blockquote>
+<div class="section" id="unix">
+<h2>UNIX域套接字<a class="headerlink" href="#unix" title="永久链接至标题">¶</a></h2>
+<p>UNIX域套接字用于在同一台计算机上运行的进程之间的通信。虽然因特网域套接字可用于同一目的，但
+UNIX域套接字的效率更高。</p>
+<p>UNIX域套接字提供流和数据报两种接口。UNIX域数据报服务是可靠的，既不会丢失报文也不会传递出错。</p>
+<p>可以使用socketpair函数来创建一对无命名的、相互连接的UNIX域套接字：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">socketpair</span><span class="p">(</span><span class="kt">int</span> <span class="n">domain</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">,</span> <span class="kt">int</span> <span class="n">protocol</span><span class="p">,</span> <span class="kt">int</span> <span class="n">sockfd</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<p>一对相互连接的UNIX域套接字可以起到全双工管道的作用：两端对读和写开放。</p>
+<div class="figure align-default" id="id3">
+<img alt="image-20210513203943007" src="https://gitee.com/snow_zhao/img/raw/master/img/image-20210513203943007.png" />
+<p class="caption"><span class="caption-text">image-20210513203943007</span><a class="headerlink" href="#id3" title="永久链接至图片">¶</a></p>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>命名UNIX域套接字<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>UNIX域套接字的地址由sockaddr_un结构表示。</p>
+<p>该结构的格式和具体实现相关。其中Linux3.2.0的表示为：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">sockaddr_un</span> <span class="p">{</span>
+    <span class="n">sa_family_t</span> <span class="n">sun_family</span><span class="p">;</span> <span class="c1">// AF_UNIX</span>
+    <span class="kt">char</span> <span class="n">sun_path</span><span class="p">[</span><span class="mi">108</span><span class="p">];</span>     <span class="c1">// pathname</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>sockaddr_un结构的sun_path成员包含一个路径名。当我们将一个地址绑定到一个UNIX域套接字时，系统会用该路径名创建一个S_IFSOCK类型的文件。</p>
+<p>利用该地址和bind函数，我们就能创建一个命名的UNIX域套接字。</p>
+<blockquote>
+<div><p>该文件仅用于向客户进程告示套接字名字。该文件无法打开，也不能由应用程序用于通信。</p>
+</div></blockquote>
+<p>如果我们试图绑定同一地址时，该文件已经存在，那么bind请求会失败。当关闭套接字时，并不自动删除该文件，所以必须确保在应用程序退出前，对该文件执行解除链接操作。</p>
+<p>使用示例：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;apue.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/un.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">size</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">sockaddr_un</span> <span class="n">un</span><span class="p">;</span>
+    <span class="n">un</span><span class="p">.</span><span class="n">sun_family</span> <span class="o">=</span> <span class="n">AF_UNIX</span><span class="p">;</span>
+    <span class="n">strcpy</span><span class="p">(</span><span class="n">un</span><span class="p">.</span><span class="n">sun_path</span><span class="p">,</span> <span class="s">&quot;foo.socket&quot;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">fd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_UNIX</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">&quot;socket failed&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">offsetof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">sockaddr_un</span><span class="p">,</span> <span class="n">sun_path</span><span class="p">)</span> <span class="o">+</span> <span class="n">strlen</span><span class="p">(</span><span class="n">un</span><span class="p">.</span><span class="n">sun_path</span><span class="p">);</span>
+    <span class="c1">// offsetof is a macro:</span>
+    <span class="c1">// #define offsetof(TYPE, MEMBER) ((int)&amp;((TYPE *)0)-&gt;MEMBER)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">bind</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">sockaddr</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">un</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">&quot;bind failed&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;UNIX domain socket bound</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="getopt">
+<h2>getopt<a class="headerlink" href="#getopt" title="永久链接至标题">¶</a></h2>
+<p>可以利用getopt函数来处理命令行选项。</p>
+<p>之前看到过一篇写的还不错的<a class="reference external" href="https://www.cnblogs.com/qingergege/p/5914218.html">博客</a>，可以一起参考。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">getopt</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="k">const</span> <span class="n">argv</span><span class="p">[],</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">options</span><span class="p">);</span>
+<span class="c1">// 若所有选项被处理完则返回-1，否则返回下一个选项字符</span>
+<span class="k">extern</span> <span class="kt">int</span> <span class="n">optind</span><span class="p">,</span> <span class="n">opterr</span><span class="p">,</span> <span class="n">optopt</span><span class="p">;</span>
+<span class="k">extern</span> <span class="kt">char</span> <span class="o">*</span><span class="n">optarg</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>参数argc和argv与传入main函数的一样。</p>
+<p>options参数是一个包含该命令支持的选项字符的字符串。如果一个选项字符后面接了一个冒号，则表示该选项需要参数；否则，该选项不需要额外参数。</p>
+<p>当遇到无效的选项时，getopt返回一个问题标记（应该就是指<code class="docutils literal notranslate"><span class="pre">?</span></code>这个字符）而不是这个字符。如果选项缺少参数，getopt也会返回一个问题标记，但如果选项字符串的第一个字符是冒号，getopt会直接返回冒号。</p>
+<p>特殊的“–”格式则会导致getopt停止处理选项并返回-1。这允许用户传递以“-”开头但不是选项的参数。</p>
+<blockquote>
+<div><p>例如，如果有一个名字为“-bar”的文件，下面的命令行是无法删除这个文件的：</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>rm –bar
+</pre></div>
+</div>
+<p>因为rm会试图把-bar解释为选项。正确的删除文件的命令应该是：</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>rm -- -bar
+</pre></div>
+</div>
+</div></blockquote>
+<p>getopt函数支持以下4个外部变量。</p>
+<ul class="simple">
+<li><p>optarg：如果一个选项需要参数，在处理该选项时，getopt会设置optarg指向该选项的参数字符串。</p></li>
+<li><p>opterr：如果一个选项发生了错误，getopt会默认打印一条出错消息。应用程序可以通过设置opterr参数为0来禁止这个行为。</p></li>
+<li><p>optind：用来存放下一个要处理的字符串在argv数组里的下标。它从1开始，每处理一个参数，getopt都会对其递增1。</p></li>
+<li><p>optopt：如果处理选项时发生了错误，getopt会设置optopt指向导致出错的选项字符串。</p></li>
+</ul>
+<p>截取的一部分示例程序：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="p">((</span><span class="n">c</span> <span class="o">=</span> <span class="n">getopt</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="s">&quot;d&quot;</span><span class="p">))</span> <span class="o">!=</span> <span class="n">EOF</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="s">&quot;d&quot;</span><span class="o">:</span>
+            <span class="n">debug</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="sc">&#39;?&#39;</span><span class="o">:</span>
+            <span class="n">err_quit</span><span class="p">(</span><span class="s">&quot;unrecognized option -%c&quot;</span><span class="p">,</span> <span class="n">optopt</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>一些更详细的示例可以参考我刚刚分享的<a class="reference external" href="https://www.cnblogs.com/qingergege/p/5914218.html">博客</a>。</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="APUE-16.html" class="btn btn-neutral float-left" title="网络IPC：套接字" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2021, snowzhao
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

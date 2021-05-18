@@ -1,0 +1,502 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>进程环境 &mdash; APUE v1 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="进程控制" href="APUE-8.html" />
+    <link rel="prev" title="系统数据文件和信息" href="APUE-6.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> APUE
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="APUE-1.html">UNIX基础知识</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-2.html">Unix标准及实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-3.html">文件I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-4.html">文件和目录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-5.html">流和FILE对象</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-6.html">系统数据文件和信息</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">进程环境</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">进程终止</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">命令行参数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">环境表</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c">C程序的存储布局</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">共享库</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">存储空间分配</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">环境变量</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setjmplongjmp">setjmp和longjmp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getrlimitsetrlimit">getrlimit和setrlimit</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-8.html">进程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-9.html">进程关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-10.html">信号</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-11.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-12.html">线程控制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-13.html">守护进程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-14.html">高级I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-15.html">进程间通信</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-16.html">网络IPC：套接字</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APUE-17.html">高级进程间通信</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">APUE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>进程环境</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/APUE-7.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>进程环境<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>C程序总是从main函数开始执行。main函数的原型是：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[]);</span>
+</pre></div>
+</div>
+<p>其中，argc是命令行参数的数目，argv是指向参数的各个指针所构成的数组。</p>
+<p>当内核通过<code class="docutils literal notranslate"><span class="pre">exec</span></code>函数执行C程序时，在调用main前先调用一个特殊的启动例程。可执行程序文件将此启动例程指定为程序的起始地址（这是由连接编辑器设置的，而连接编辑器则由C编译器调用）。启动例程从内核取得命令行参数和环境变量值，为调用main函数做好准备。</p>
+<div class="section" id="id2">
+<h2>进程终止<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>有8种方式使进程终止（termination）。</p>
+<p>其中5种为正常终止：</p>
+<ol class="arabic simple">
+<li><p>从main返回；</p></li>
+<li><p>调用<code class="docutils literal notranslate"><span class="pre">exit</span></code>；</p></li>
+<li><p>调用<code class="docutils literal notranslate"><span class="pre">_exit</span></code>或<code class="docutils literal notranslate"><span class="pre">_Exit</span></code>；</p></li>
+<li><p>最后一个线程从其启动例程返回；</p></li>
+<li><p>从最后一个线程调用<code class="docutils literal notranslate"><span class="pre">pthread_exit</span></code>。</p></li>
+</ol>
+<p>3种为异常终止：</p>
+<ol class="arabic simple" start="6">
+<li><p>调用<code class="docutils literal notranslate"><span class="pre">abort</span></code>；</p></li>
+<li><p>接到一个信号；</p></li>
+<li><p>最后一个线程对取消请求做出响应。</p></li>
+</ol>
+<p>可以使用exit函数来退出程序：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">exit</span><span class="p">(</span><span class="kt">int</span> <span class="n">status</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">_Exit</span><span class="p">(</span><span class="kt">int</span> <span class="n">status</span><span class="p">);</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">_exit</span><span class="p">(</span><span class="kt">int</span> <span class="n">status</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">_exit</span></code>和<code class="docutils literal notranslate"><span class="pre">_Exit</span></code>立即进入内核，<code class="docutils literal notranslate"><span class="pre">exit</span></code>则先执行一些清理处理，然后返回内核。</p>
+<p>传入的<code class="docutils literal notranslate"><span class="pre">status</span></code>参数被称为<strong>终止状态</strong>（在shell中可以通过<code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$?</span></code>命令来查看，没记错的话，状态的最大值好像是255）。</p>
+<p>main函数返回一个整型值与用该值调用exit是等价的。</p>
+<p>可以通过<code class="docutils literal notranslate"><span class="pre">atexit</span></code>函数来注册<strong>终止处理程序</strong>：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">atexit</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="p">)(</span><span class="kt">void</span><span class="p">));</span>
+<span class="c1">// 成功返回0，失败返回1</span>
+</pre></div>
+</div>
+<p>一个进程最多可以注册32个终止处理程序，这些函数将由exit自动调用。exit调用这些函数的顺序与它们注册的顺序<strong>相反</strong>。同一函数如若登记多次，也会被调用多次。</p>
+<p>根据ISO
+C和POSIX.1，exit首先调用各终止处理程序，然后关闭（通过fclose）所有打开流。POSIX.1扩展了ISO
+C标准，它说明，如若程序调用exec函数族中的任一函数，则将清除所有已安装的终止处理程序。</p>
+<p>atexit函数的使用示例：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;apue.h&quot;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="n">my_exit1</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="n">my_exit2</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">atexit</span><span class="p">(</span><span class="n">my_exit2</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">&quot;can&#39;t register my_exit2&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">atexit</span><span class="p">(</span><span class="n">my_exit1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">&quot;can&#39;t unregister my_exit1&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">atexit</span><span class="p">(</span><span class="n">my_exit1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">&quot;can&#39;t unregister my_exit1&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;main is done</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="n">my_exit1</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;first exit handler</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="n">my_exit2</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;second exit handler</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>输出结果：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">main</span> <span class="ow">is</span> <span class="n">done</span>
+<span class="n">first</span> <span class="n">exit</span> <span class="n">handler</span>
+<span class="n">first</span> <span class="n">exit</span> <span class="n">handler</span>
+<span class="n">second</span> <span class="n">exit</span> <span class="n">handler</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>命令行参数<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>ISO C和POSIX.1都要求argv[argc]是一个空指针。</p>
+</div>
+<div class="section" id="id4">
+<h2>环境表<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>每个程序都接收到一张环境表。环境表是一个字符指针数组，其中每个指针包含一个以null结束的C字符串的地址。全局变量environ则包含了该指针数组的地址：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">extern</span> <span class="kt">char</span> <span class="o">**</span><span class="n">environ</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>我们称environ为环境指针（environment
+pointer），指针数组为环境表，其中各指针指向的字符串为环境字符串。</p>
+</div>
+<div class="section" id="c">
+<h2>C程序的存储布局<a class="headerlink" href="#c" title="永久链接至标题">¶</a></h2>
+<p>C程序一直由下列几部分组成：</p>
+<ul>
+<li><p>正文段。这是由CPU执行的机器指令部分。通常，正文段是可共享的，还是只读的。</p></li>
+<li><p>初始化数据段。通常将此段称为数据段，它包含了程序中需明确地赋初值的变量。</p></li>
+<li><p>未初始化数据段。通常将此段称为bss段，在程序开始执行之前，内核将此段中的数据初始化为0或空指针。</p></li>
+<li><p>栈。自动变量以及每次函数调用时所需保存的信息都存放在此段中。每次函数调用时，其返回地址以及调用者的环境信息（如某些机器寄存器的值）都存放在栈中。</p>
+<blockquote>
+<div><p>递归函数每次调用自身时，就用一个新的栈帧，因此一次函数调用实例中的变量集不会影响另一次函数调用实例中的变量。</p>
+</div></blockquote>
+</li>
+<li><p>堆。通常在堆中进行动态存储分配。由于历史上形成的惯例，堆位于未初始化数据段和栈之间。</p></li>
+</ul>
+<p>典型的存储空间布局：</p>
+<p>可以通过size(1)命令来查看各个段的大小。</p>
+</div>
+<div class="section" id="id5">
+<h2>共享库<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<p>共享库使得可执行文件中不再需要包含公用的库函数，而只需在所有进程都可引用的存储区中保存这种库例程的一个副本。</p>
+<p>程序第一次执行或者第一次调用某个库函数时，用动态链接方法将程序与共享库函数相链接。</p>
+<p>这减少了每个可执行文件的长度，但增加了一些运行时间开销。这种时间开销发生在该程序第一次被执行时，或者每个共享库函数第一次被调用时。</p>
+<p>共享库的另一个优点是可以用库函数的新版本代替老版本而无需对使用该库的程序重新连接编辑（假定参数的数目和类型都没有发生改变）。</p>
+</div>
+<div class="section" id="id6">
+<h2>存储空间分配<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<p>可以使用malloc、calloc、realloc函数来动态分配内存：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span><span class="o">*</span> <span class="nf">malloc</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
+<span class="kt">void</span><span class="o">*</span> <span class="nf">calloc</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">nobj</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
+<span class="kt">void</span><span class="o">*</span> <span class="nf">realloc</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">ptr</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">newsize</span><span class="p">);</span>
+<span class="c1">// 成功返回非空指针，出错返回NULL</span>
+</pre></div>
+</div>
+<p>这3个分配函数所返回的指针一定是<strong>适当对齐</strong>的，使其可用于任何数据对象。</p>
+<p>如果ptr为NULL，那么realloc的功能和malloc相同。</p>
+<p>可以使用free函数来释放动态分配的内存：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">free</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">ptr</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>环境变量<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<p>环境字符串的格式是：</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nv">name</span><span class="o">=</span>value
+</pre></div>
+</div>
+<p>可以使用getenv函数来获取环境变量值：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="kt">char</span><span class="o">*</span> <span class="nf">getenv</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">);</span>
+<span class="c1">// 找到则返回与name相关联的value的指针，没找到返回NULL</span>
+</pre></div>
+</div>
+<p>可以使用putenv, setenv, unsetenv来设置环境变量：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">putenv</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span> <span class="n">str</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回非0</span>
+<span class="kt">int</span> <span class="nf">setenv</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">value</span><span class="p">,</span> <span class="kt">int</span> <span class="n">rewrite</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">unsetenv</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回-1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>putenv将形式为name=value的字符串放到环境表中。如果name已经存在，则覆盖原来的定义。</p></li>
+<li><p>setenv将name设置为value。若rewrite非0，则已存在时会进行覆盖；否则不删除其现有定义，也不报错。</p></li>
+<li><p>unsetenv删除name的定义。即使不存在这种定义也不算出错。</p></li>
+</ul>
+<blockquote>
+<div><p>putenv和setenv之间的差别：</p>
+<ul class="simple">
+<li><p>setenv必须分配存储空间，以便依据其参数创建name=value字符串。</p></li>
+<li><p>putenv可以自由地将传递给它的参数字符串直接放到环境中。</p></li>
+</ul>
+<p>因此，将存放在栈中的字符串作为参数传递给putenv就会发生错误，其原因是，从当前函数返回时，其栈帧占用的存储区可能将被重用。</p>
+</div></blockquote>
+</div>
+<div class="section" id="setjmplongjmp">
+<h2>setjmp和longjmp<a class="headerlink" href="#setjmplongjmp" title="永久链接至标题">¶</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;setjmp.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">setjmp</span><span class="p">(</span><span class="kt">jmp_buf</span> <span class="n">env</span><span class="p">);</span>
+<span class="c1">// 直接调用返回0，从longjmp中返回，返回非0</span>
+<span class="kt">void</span> <span class="nf">longjmp</span><span class="p">(</span><span class="kt">jmp_buf</span> <span class="n">env</span><span class="p">,</span> <span class="kt">int</span> <span class="n">val</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>一个使用示例：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;apue.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;setjmp.h&gt;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="n">f1</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="n">f2</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="k">static</span> <span class="kt">jmp_buf</span> <span class="n">jmpbuffer</span><span class="p">;</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="n">globalval</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">autoval</span><span class="p">;</span>
+    <span class="k">register</span> <span class="kt">int</span> <span class="n">regival</span><span class="p">;</span>
+    <span class="k">volatile</span> <span class="kt">int</span> <span class="n">volval</span><span class="p">;</span>
+    <span class="k">static</span> <span class="kt">int</span> <span class="n">staval</span><span class="p">;</span>
+    <span class="n">globalval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">autoval</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">regival</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">volval</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">staval</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">setjmp</span><span class="p">(</span><span class="n">jmpbuffer</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;after longjmp:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;globalval = %d, autoval = %d, regival = %d, volval = %d, staval = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">globalval</span><span class="p">,</span> <span class="n">autoval</span><span class="p">,</span> <span class="n">regival</span><span class="p">,</span> <span class="n">volval</span><span class="p">,</span> <span class="n">staval</span><span class="p">);</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">globalval</span> <span class="o">=</span> <span class="mi">95</span><span class="p">,</span> <span class="n">autoval</span> <span class="o">=</span> <span class="mi">96</span><span class="p">,</span> <span class="n">regival</span> <span class="o">=</span> <span class="mi">97</span><span class="p">,</span> <span class="n">volval</span> <span class="o">=</span> <span class="mi">98</span><span class="p">,</span> <span class="n">staval</span> <span class="o">=</span> <span class="mi">99</span><span class="p">;</span>
+    <span class="n">f1</span><span class="p">(</span><span class="n">autoval</span><span class="p">,</span> <span class="n">regival</span><span class="p">,</span> <span class="n">volval</span><span class="p">,</span> <span class="n">staval</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="n">f1</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">,</span> <span class="kt">int</span> <span class="n">l</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;in f1():</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;globalval = %d, autoval = %d, regival = %d, volval = %d, staval = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">globalval</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">);</span>
+    <span class="n">f2</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="n">f2</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">longjmp</span><span class="p">(</span><span class="n">jmpbuffer</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>输出结果：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ow">in</span> <span class="n">f1</span><span class="p">():</span>
+<span class="n">globalval</span> <span class="o">=</span> <span class="mi">95</span><span class="p">,</span> <span class="n">autoval</span> <span class="o">=</span> <span class="mi">96</span><span class="p">,</span> <span class="n">regival</span> <span class="o">=</span> <span class="mi">97</span><span class="p">,</span> <span class="n">volval</span> <span class="o">=</span> <span class="mi">98</span><span class="p">,</span> <span class="n">staval</span> <span class="o">=</span> <span class="mi">99</span>
+<span class="n">after</span> <span class="n">longjmp</span><span class="p">:</span>
+<span class="n">globalval</span> <span class="o">=</span> <span class="mi">95</span><span class="p">,</span> <span class="n">autoval</span> <span class="o">=</span> <span class="mi">96</span><span class="p">,</span> <span class="n">regival</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">volval</span> <span class="o">=</span> <span class="mi">98</span><span class="p">,</span> <span class="n">staval</span> <span class="o">=</span> <span class="mi">99</span>
+</pre></div>
+</div>
+<p>变量在调用longjmp后值是否回滚是<strong>不确定的</strong>。</p>
+<p>如果你有一个自动变量，而又不想使其值回滚，则可定义其为具有volatile属性。</p>
+<p>声明为全局变量或静态变量的值在执行longjmp时保持不变。</p>
+</div>
+<div class="section" id="getrlimitsetrlimit">
+<h2>getrlimit和setrlimit<a class="headerlink" href="#getrlimitsetrlimit" title="永久链接至标题">¶</a></h2>
+<p>每个进程都有一组资源限制，其中一些可以用getrlimit和setrlimit函数查询和更改。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/resource.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">getrlimit</span><span class="p">(</span><span class="kt">int</span> <span class="n">resource</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">rlimit</span><span class="o">*</span> <span class="n">rlptr</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">setrlimit</span><span class="p">(</span><span class="kt">int</span> <span class="n">resource</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">rlimit</span><span class="o">*</span> <span class="n">rlptr</span><span class="p">);</span>
+<span class="c1">// 成功返回0，出错返回非0</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">rlimit</span></code>的结构如下：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">rlimit</span> <span class="p">{</span>
+    <span class="kt">rlim_t</span> <span class="n">rlim_cur</span><span class="p">;</span> <span class="cm">/* soft limit: current limit */</span>
+    <span class="kt">rlim_t</span> <span class="n">rlim_max</span><span class="p">;</span> <span class="cm">/* hard limit: maximum value for rlim_cur */</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>在更改资源限制时，须遵循下列3条规则：</p>
+<ol class="arabic simple">
+<li><p>任何一个进程都可将一个软限制值更改为小于或等于其硬限制值。</p></li>
+<li><p>任何一个进程都可降低其硬限制值，但它必须大于或等于其软限制值。这种降低，对普通用户而言是不可逆的。</p></li>
+<li><p>只有超级用户进程可以提高硬限制值。</p></li>
+</ol>
+<p>常量RLIM_INFINITY指定了一个无限量的限制。</p>
+<p>resource参数的取值可参考APUE第三版P176-177。</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="APUE-8.html" class="btn btn-neutral float-right" title="进程控制" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="APUE-6.html" class="btn btn-neutral float-left" title="系统数据文件和信息" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2021, snowzhao
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
